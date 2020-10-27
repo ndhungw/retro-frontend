@@ -68,7 +68,8 @@ export default function BoardsList() {
 
   useEffect(() => {
     async function getAllBoards() {
-      const response = await axios.get("http://localhost:4000/boards");
+      // const response = await axios.get("http://localhost:4000/boards");
+      const response = await axios.get("https://retro-clone-api.herokuapp.com/boards");
       const boards = response.data;
       // console.log(boards);
       setBoardsList(boards);

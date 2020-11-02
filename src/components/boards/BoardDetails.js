@@ -6,7 +6,8 @@ import { StoreContext } from "../../utils/store";
 
 export default function BoardDetails() {
   const { id } = useParams();
-  const [columns, setColumns] = useState([]);
+  // const [columns, setColumns] = useState([]);
+  const { contextColumns, setContextColumns } = useContext(StoreContext);
 
   useEffect(() => {
     async function getAllColumnsFromBoard(boardId) {
@@ -16,17 +17,20 @@ export default function BoardDetails() {
       const columns = response.data.filter(
         (column) => column.boardId === boardId
       );
-      // console.log(columns);
-      setColumns(columns);
+      // setColumns(columns);
+      setContextColumns(columns);
     }
     getAllColumnsFromBoard(id);
   }, [id]);
 
   return (
     <React.Fragment>
-      {columns.map((column) => (
+      {contextColumns.map((column) => (
         <Column key={column._id} column={column} />
       ))}
+      {/* {columns.map((column) => (
+        <Column key={column._id} column={column} />
+      ))} */}
     </React.Fragment>
   );
 }

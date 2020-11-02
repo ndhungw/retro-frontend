@@ -4,7 +4,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 import axios from "axios";
-import StoreContext from "../../utils/store";
+import { StoreContext } from "../../utils/store";
 
 const useStyle = makeStyles((theme) => ({
   card: {
@@ -29,7 +29,8 @@ const useStyle = makeStyles((theme) => ({
 export default function InputCard({ columnId, authorId, setIsOpen }) {
   const classes = useStyle();
   const [content, setContent] = useState("");
-  // const { addANewCard } = useContext(StoreContext);
+  // const { addANewCard } = useContext(StoreContext); /----
+  const { contextCards, setContextCards } = useContext(StoreContext);
 
   const handleChange = (e) => {
     setContent(e.target.value);
@@ -41,14 +42,16 @@ export default function InputCard({ columnId, authorId, setIsOpen }) {
       authorId,
       columnId,
     };
+    // addANewCard(newCard); // ----
+    setContextCards([...contextCards, newCard]);
+    setContent("");
+    setIsOpen(false);
+
     const response = await axios.post(
       "https://retro-clone-api.herokuapp.com/cards/add",
       newCard
     );
     console.log(response.data + newCard);
-
-    // addANewCard(newCard);
-    setIsOpen(false);
   };
 
   return (
@@ -62,6 +65,7 @@ export default function InputCard({ columnId, authorId, setIsOpen }) {
             inputProps={{
               className: classes.input,
             }}
+            value={content}
             onBlur={() => setIsOpen(false)}
             placeholder="Enter a title of this card ..."
           />

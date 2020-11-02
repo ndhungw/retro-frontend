@@ -1,11 +1,12 @@
 import { CssBaseline } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Title from "./Title";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import InputContainer from "../Input/InputContainer";
 import Card from "./Card";
 import axios from "axios";
+import { StoreContext } from "../../utils/store";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -17,7 +18,8 @@ const useStyle = makeStyles((theme) => ({
 
 export default function Column({ column }) {
   const classes = useStyle();
-  const [cards, setCards] = useState([]);
+  // const [cards, setCards] = useState([]);
+  const { contextCards, setContextCards } = useContext(StoreContext);
 
   useEffect(() => {
     async function getAllCardsFromColumn(columnId) {
@@ -25,8 +27,8 @@ export default function Column({ column }) {
         "https://retro-clone-api.herokuapp.com/cards"
       );
       const cards = response.data.filter((card) => card.columnId === columnId);
-      // console.log(cards);
-      setCards(cards);
+      // setCards(cards);
+      setContextCards(cards);
     }
     getAllCardsFromColumn(column._id);
   }, [column._id]);
@@ -35,7 +37,10 @@ export default function Column({ column }) {
     <Paper className={classes.root}>
       <CssBaseline />
       <Title columnName={column.name} />
-      {cards.map((card) => (
+      {/* {typeof contextCards == Promise
+        ? cards.map((card) => <Card key={card._id} card={card} />)
+        : contextCards.map((card) => <Card key={card._id} card={card} />)} */}
+      {contextCards.map((card) => (
         <Card key={card._id} card={card} />
       ))}
       <InputContainer columnId={column._id} authorId="123test" />

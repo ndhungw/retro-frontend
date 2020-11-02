@@ -1,27 +1,17 @@
-import './App.css';
-import BoardsList from './components/boards/boards-list.component';
+import "./App.css";
+import SimpleTabs from "./components/SimpleTabs";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import BoardDetails from "./components/boards/BoardDetails";
+// import StoreContextProvider from "./utils/store";
 
 function App() {
   return (
-    <BoardsList></BoardsList>
-
-    // -------------------------------------------------------
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
+    // <StoreContextProvider>
+    <Router>
+      <Route path="/" exact component={SimpleTabs} />
+      <Route path="/boards/:id" component={BoardDetails} />
+    </Router>
+    // </StoreContextProvider>
   );
 }
 

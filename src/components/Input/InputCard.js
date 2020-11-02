@@ -26,9 +26,15 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function InputCard({ columnId, authorId, setIsOpen }) {
+export default function InputCard({
+  cardId,
+  columnId,
+  authorId,
+  setIsOpen,
+  oldContent,
+}) {
   const classes = useStyle();
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(oldContent ? oldContent : "");
   // const { addANewCard } = useContext(StoreContext); /----
   const { contextCards, setContextCards } = useContext(StoreContext);
 
@@ -37,21 +43,73 @@ export default function InputCard({ columnId, authorId, setIsOpen }) {
   };
 
   const handleBtnConfirm = async () => {
-    const newCard = {
-      content,
-      authorId,
-      columnId,
-    };
-    // addANewCard(newCard); // ----
-    setContextCards([...contextCards, newCard]);
-    setContent("");
-    setIsOpen(false);
+    // update
+    if (oldContent) {
+      if (!content) {
+        // update but empty => delete?
+        // ...
+        // (implement later!)
+      }
+      // update the contextCards to fast update frontend
+      const updatedContextCards = contextCards.map((card) => {
+        if (card._id === cardId) {
+          card.content = content;
+        }
+        return card;
+      });
 
-    const response = await axios.post(
-      "https://retro-clone-api.herokuapp.com/cards/add",
-      newCard
-    );
-    console.log(response.data + newCard);
+      setContextCards(updatedContextCards);
+
+      // update DB
+      const response = await axios.get(
+        `https://retro-clone-api.herokuapp.com/cards/${cardId}`
+      );
+      const cardFound = response.data;
+      console.log("cardFound: " + cardFound);
+
+      cardFound.content = content;
+      await axios.post(
+        `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
+        cardFound
+      );
+    } else {
+      // if create but no content => cancel
+      if (!content) {
+        setIsOpen(false);
+        return;
+      }
+
+      const newCard = {
+        content,
+        authorId,
+        columnId,
+      };
+
+      setContextCards([...contextCards, newCard]);
+      setIsOpen(false);
+
+      const response = await axios.post(
+        "https://retro-clone-api.herokuapp.com/cards/add",
+        newCard
+      );
+
+      console.log(response.data + newCard);
+      setContent("");
+    }
+  };
+
+  const handleBlur = () => {
+    setIsOpen(false);
+  };
+
+  const handleBtnClear = () => {
+    if (oldContent) {
+      // updating but hit the clear button
+      setIsOpen(false);
+    } else {
+      setIsOpen(false);
+      setContent("");
+    }
   };
 
   return (
@@ -66,7 +124,7 @@ export default function InputCard({ columnId, authorId, setIsOpen }) {
               className: classes.input,
             }}
             value={content}
-            onBlur={() => setIsOpen(false)}
+            onBlur={() => handleBlur()}
             placeholder="Enter a title of this card ..."
           />
         </Paper>
@@ -76,9 +134,9 @@ export default function InputCard({ columnId, authorId, setIsOpen }) {
           className={classes.btnConfirm}
           onClick={() => handleBtnConfirm()}
         >
-          Add Card
+          {oldContent ? "Update" : "Save"}
         </Button>
-        <IconButton onClick={() => setIsOpen(false)}>
+        <IconButton onClick={() => handleBtnClear()}>
           <ClearIcon />
         </IconButton>
       </div>

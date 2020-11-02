@@ -37,9 +37,6 @@ export default function Column({ column }) {
     <Paper className={classes.root}>
       <CssBaseline />
       <Title columnName={column.name} />
-      {/* {typeof contextCards == Promise
-        ? cards.map((card) => <Card key={card._id} card={card} />)
-        : contextCards.map((card) => <Card key={card._id} card={card} />)} */}
       {contextCards.map((card) => (
         <Card key={card._id} card={card} />
       ))}

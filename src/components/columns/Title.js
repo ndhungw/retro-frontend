@@ -51,14 +51,14 @@ export default function Title({ columnName, columnId }) {
     );
 
     // update DB
-    console.log(columnId);
+    // console.log(columnId);
     const response = await axios.post(
       `http://localhost:4000/columns/update/${columnId}`,
       {
         name: newColName,
       }
     );
-    console.log(response);
+    // console.log(response);
 
     setIsEditing(!isEditing);
   };
@@ -73,19 +73,13 @@ export default function Title({ columnName, columnId }) {
             className: classes.input,
           }}
           fullWidth
-          onBlur={
-            () => handleBlur()
-            // setIsEditing(!isEditing)
-          }
+          onBlur={() => handleBlur()}
         />
       ) : (
         <div className={classes.editableContainer}>
           <Typography
             className={classes.editableTitle}
-            onClick={() =>
-              // handleBlur()
-              setIsEditing(!isEditing)
-            }
+            onClick={() => setIsEditing(!isEditing)}
           >
             {columnName}
           </Typography>

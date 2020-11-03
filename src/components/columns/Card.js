@@ -6,15 +6,12 @@ import { Collapse, Typography } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(2),
-  },
-  card: {
-    padding: theme.spacing(1, 1, 1, 1),
     margin: theme.spacing(1),
   },
   editCard: {
-    padding: theme.spacing(1, 1, 1, 2),
-    margin: theme.spacing(0, 1, 1, 1),
+    padding: theme.spacing(1),
+    // margin: theme.spacing(0),
+    minHeight: "2.5rem",
     background: "#fff",
     "&:hover": {
       backgroundColor: fade("#000", 0.1),

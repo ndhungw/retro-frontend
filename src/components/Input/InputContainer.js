@@ -12,9 +12,11 @@ const useStyle = makeStyles((theme) => ({
   addCard: {
     padding: theme.spacing(1, 1, 1, 2),
     margin: theme.spacing(0, 1, 1, 1),
-    background: "#EBECF0",
+    // background: "#EBECF0",
+    background: "#5AAC44",
+    color: "#fff",
     "&:hover": {
-      backgroundColor: fade("#000", 0.25),
+      backgroundColor: fade("#5AAC44", 0.25),
     },
   },
 }));

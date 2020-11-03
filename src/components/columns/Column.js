@@ -1,5 +1,5 @@
 import { CssBaseline } from "@material-ui/core";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import Title from "./Title";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,7 +12,7 @@ const useStyle = makeStyles((theme) => ({
   root: {
     width: "300px",
     backgroundColor: "#EBECF0",
-    marginLeft: theme.spacing(1),
+    margin: theme.spacing(2),
   },
 }));
 

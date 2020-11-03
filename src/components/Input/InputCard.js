@@ -9,7 +9,6 @@ import { StoreContext } from "../../utils/store";
 const useStyle = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(1),
-    // paddingBottom: theme.spacing(2),
   },
   input: {
     margin: theme.spacing(1),
@@ -35,7 +34,6 @@ export default function InputCard({
 }) {
   const classes = useStyle();
   const [content, setContent] = useState(oldContent ? oldContent : "");
-  // const { addANewCard } = useContext(StoreContext); /----
   const { contextCards, setContextCards } = useContext(StoreContext);
 
   const handleChange = (e) => {

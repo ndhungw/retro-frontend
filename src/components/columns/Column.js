@@ -38,9 +38,6 @@ export default function Column({ column }) {
   // test api query
   // useEffect(() => {
   //   async function getAllCardsFromColumn(columnId) {
-  //     // const response = await axios.get(
-  //     //   "https://retro-clone-api.herokuapp.com/cards"
-  //     // );
   //     const response = await axios.get(
   //       `https://retro-clone-api.herokuapp.com/cards?columnId=${columnId}`
   //     );
@@ -57,7 +54,7 @@ export default function Column({ column }) {
     <div>
       <Paper className={classes.root} elevation={3}>
         <CssBaseline />
-        <Title columnName={column.name} />
+        <Title columnName={column.name} columnId={column._id} />
         {contextCards
           .filter((card) => card.columnId === column._id)
           .map((card) => (

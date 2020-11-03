@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import { makeStyles } from "@material-ui/core/styles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import { StoreContext } from "../../utils/store";
+import axios from "axios";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -27,27 +29,63 @@ const useStyle = makeStyles((theme) => ({
     fontWeight: "bold",
   },
 }));
-export default function Title({ columnName }) {
-  const [open, setOpen] = useState(false);
+export default function Title({ columnName, columnId }) {
+  const [isEditing, setIsEditing] = useState(false);
   const classes = useStyle();
+  const [newColName, setNewColName] = useState(columnName);
+  const { contextColumns, setContextColumns } = useContext(StoreContext);
 
+  const handleChange = (e) => {
+    setNewColName(e.target.value);
+  };
+
+  const handleBlur = async () => {
+    // update frontend
+    setContextColumns(
+      contextColumns.map((column) => {
+        if (column._id === columnId) {
+          column.name = newColName;
+        }
+        return column;
+      })
+    );
+
+    // update DB
+    console.log(columnId);
+    const response = await axios.post(
+      `http://localhost:4000/columns/update/${columnId}`,
+      {
+        name: newColName,
+      }
+    );
+    console.log(response);
+
+    setIsEditing(!isEditing);
+  };
   return (
     <div className={classes.root}>
-      {open ? (
+      {isEditing ? (
         <InputBase
+          onChange={(e) => handleChange(e)}
           autoFocus
-          value={columnName}
+          value={newColName}
           inputProps={{
             className: classes.input,
           }}
           fullWidth
-          onBlur={() => setOpen(!open)}
+          onBlur={
+            () => handleBlur()
+            // setIsEditing(!isEditing)
+          }
         />
       ) : (
         <div className={classes.editableContainer}>
           <Typography
             className={classes.editableTitle}
-            onClick={() => setOpen(!open)}
+            onClick={() =>
+              // handleBlur()
+              setIsEditing(!isEditing)
+            }
           >
             {columnName}
           </Typography>

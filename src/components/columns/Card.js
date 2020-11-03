@@ -6,11 +6,11 @@ import { Collapse, Typography } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(1),
+    // margin: theme.spacing(1),
   },
-  editCard: {
+  card: {
     padding: theme.spacing(1),
-    // margin: theme.spacing(0),
+    margin: theme.spacing(1),
     minHeight: "2.5rem",
     background: "#fff",
     "&:hover": {
@@ -27,6 +27,7 @@ export default function Card({ card }) {
     <div className={classes.root}>
       <Collapse in={isOpen}>
         <InputCard
+          type="card"
           cardId={card._id}
           columnId={card.columnId}
           authorId={card.authorId}
@@ -36,7 +37,7 @@ export default function Card({ card }) {
       </Collapse>
       <Collapse in={!isOpen}>
         <Paper
-          className={classes.editCard}
+          className={classes.card}
           onClick={() => setIsOpen(!isOpen)}
           elevation={0}
         >
@@ -44,9 +45,5 @@ export default function Card({ card }) {
         </Paper>
       </Collapse>
     </div>
-
-    // <div>
-    //   <Paper className={classes.card}>{card.content}</Paper>
-    // </div>
   );
 }

@@ -7,11 +7,11 @@ import InputCard from "./InputCard";
 
 const useStyle = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(2),
+    minWidth: "300px",
   },
-  addCard: {
+  addANewCardOrColumn: {
     padding: theme.spacing(1, 1, 1, 2),
-    margin: theme.spacing(0, 1, 1, 1),
+    margin: theme.spacing(1, 1, 1, 1),
     // background: "#EBECF0",
     background: "#5AAC44",
     color: "#fff",
@@ -21,7 +21,7 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function InputContainer({ columnId, authorId }) {
+export default function InputContainer({ type, boardId, columnId, authorId }) {
   const classes = useStyle();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,6 +29,8 @@ export default function InputContainer({ columnId, authorId }) {
     <div className={classes.root}>
       <Collapse in={isOpen}>
         <InputCard
+          type={type}
+          boardId={boardId}
           columnId={columnId}
           authorId={authorId}
           setIsOpen={setIsOpen}
@@ -36,11 +38,17 @@ export default function InputContainer({ columnId, authorId }) {
       </Collapse>
       <Collapse in={!isOpen}>
         <Paper
-          className={classes.addCard}
+          className={classes.addANewCardOrColumn}
           onClick={() => setIsOpen(!isOpen)}
-          elevation={0}
+          elevation={3}
         >
-          <Typography> + Add a card</Typography>
+          <Typography>
+            {type === "board"
+              ? "Add a board"
+              : type === "column"
+              ? "+ Add a column"
+              : "+ Add a card"}
+          </Typography>
         </Paper>
       </Collapse>
     </div>

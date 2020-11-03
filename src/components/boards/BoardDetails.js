@@ -3,11 +3,26 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Column from "../columns/Column";
 import { StoreContext } from "../../utils/store";
+import InputContainer from "../Input/InputContainer";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+
+const useStyle = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    minHeight: "100vh",
+    flexWrap: "wrap",
+  },
+  column: {
+    backgroundColor: "#EBECF0",
+    margin: theme.spacing(2, 2, 2, 2),
+  },
+}));
 
 export default function BoardDetails() {
   const { id } = useParams();
-  // const [columns, setColumns] = useState([]);
   const { contextColumns, setContextColumns } = useContext(StoreContext);
+  const classes = useStyle();
 
   useEffect(() => {
     async function getAllColumnsFromBoard(boardId) {
@@ -17,7 +32,6 @@ export default function BoardDetails() {
       const columns = response.data.filter(
         (column) => column.boardId === boardId
       );
-      // setColumns(columns);
       setContextColumns(columns);
     }
     getAllColumnsFromBoard(id);
@@ -25,12 +39,19 @@ export default function BoardDetails() {
 
   return (
     <React.Fragment>
-      {contextColumns.map((column) => (
-        <Column key={column._id} column={column} />
-      ))}
-      {/* {columns.map((column) => (
-        <Column key={column._id} column={column} />
-      ))} */}
+      <div className={classes.root}>
+        {contextColumns.map((column) => (
+          <Column key={column._id} column={column} />
+        ))}
+
+        {/* The new col to add stands on the right of columns */}
+        <div>
+          <Paper elevation={3} className={classes.column}>
+            {/* <InputContainer columnId={column._id} authorId="123test" /> */}
+            <InputContainer type="column" boardId={id} />
+          </Paper>
+        </div>
+      </div>
     </React.Fragment>
   );
 }

@@ -3,6 +3,9 @@ import { InputBase, Paper, Button, IconButton } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
+import DeleteIcon from "@material-ui/icons/Delete";
+import SaveIcon from "@material-ui/icons/Save";
+
 import axios from "axios";
 import { StoreContext } from "../../utils/store";
 
@@ -10,6 +13,7 @@ const useStyle = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(1),
   },
+  // InputBase
   input: {
     margin: theme.spacing(1),
   },
@@ -22,32 +26,72 @@ const useStyle = makeStyles((theme) => ({
   },
   confirm: {
     margin: theme.spacing(1),
+    display: "flex",
+    justifyContent: "space-between",
   },
 }));
 
 export default function InputCard({
-  cardId,
+  type,
+  boardId,
   columnId,
+  cardId,
   authorId,
-  setIsOpen,
   oldContent,
+  setIsOpen,
 }) {
   const classes = useStyle();
   const [content, setContent] = useState(oldContent ? oldContent : "");
   const { contextCards, setContextCards } = useContext(StoreContext);
+  const { contextColumns, setContextColumns } = useContext(StoreContext);
 
   const handleChange = (e) => {
     setContent(e.target.value);
   };
 
-  const handleBtnConfirm = async () => {
-    // update
-    if (oldContent) {
-      if (!content) {
-        // update but empty => delete?
-        // ...
-        // (implement later!)
-      }
+  const addCard = async () => {
+    // if create but no content => cancel
+    if (!content) {
+      setIsOpen(false);
+      return;
+    }
+
+    const newCard = {
+      content,
+      authorId,
+      columnId,
+    };
+
+    const response = await axios.post(
+      // "https://retro-clone-api.herokuapp.com/cards/add",
+      "http://localhost:4000/cards/add",
+      newCard
+    );
+
+    setContextCards([...contextCards, response.data]);
+    setIsOpen(false);
+
+    console.log("FROM INPUTCARD.addCard: " + response.data);
+    setContent("");
+  };
+
+  const deleteCard = async (cardId) => {
+    const response = await axios.delete(
+      `http://localhost:4000/cards/${cardId}`
+    );
+    console.log(response);
+
+    // update frontend
+    setContextCards(contextCards.filter((card) => card._id !== cardId));
+
+    setIsOpen(false);
+  };
+
+  const updateCard = async (oldContent) => {
+    if (!content) {
+      // update but content is null => delete
+      deleteCard(cardId);
+    } else {
       // update the contextCards to fast update frontend
       const updatedContextCards = contextCards.map((card) => {
         if (card._id === cardId) {
@@ -66,48 +110,69 @@ export default function InputCard({
       console.log("cardFound: " + cardFound);
 
       cardFound.content = content;
-      await axios.post(
-        `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
-        cardFound
+      const updateResponse = await axios.post(
+        `http://localhost:4000/cards/update/${cardId}`,
+        {
+          authorId: cardFound.authorId,
+          content: cardFound.content,
+          columnId: cardFound.columnId,
+        }
       );
+      console.log(updateResponse);
+    }
+  };
+
+  const addColumn = async () => {
+    const response = await axios.post("http://localhost:4000/columns/add", {
+      name: content,
+      boardId: boardId,
+    });
+    const newColumn = response.data;
+
+    if (newColumn) {
+      setContextColumns([...contextColumns, newColumn]);
     } else {
-      // if create but no content => cancel
-      if (!content) {
-        setIsOpen(false);
-        return;
+      // render 1 the? bao loi
+    }
+
+    setIsOpen(false);
+    setContent("");
+  };
+
+  const handleBtnConfirm = async () => {
+    if (type === "card") {
+      if (oldContent) {
+        updateCard(oldContent);
+      } else {
+        addCard();
       }
-
-      const newCard = {
-        content,
-        authorId,
-        columnId,
-      };
-
-      setContextCards([...contextCards, newCard]);
-      setIsOpen(false);
-
-      const response = await axios.post(
-        "https://retro-clone-api.herokuapp.com/cards/add",
-        newCard
-      );
-
-      console.log(response.data + newCard);
-      setContent("");
+    } else if (type === "column") {
+      addColumn();
+    } else if (type === "board") {
     }
   };
 
   const handleBlur = () => {
+    if (!content) {
+      // update but content is null => delete
+      setContent(oldContent);
+    }
     setIsOpen(false);
   };
 
-  const handleBtnClear = () => {
-    if (oldContent) {
-      // updating but hit the clear button
-      setIsOpen(false);
-    } else {
-      setIsOpen(false);
-      setContent("");
-    }
+  const handleBtnCancel = () => {
+    // if (oldContent) {
+    //   // updating but hit the clear button
+    //   setIsOpen(false);
+    // } else {
+    //   setIsOpen(false);
+    //   setContent("");
+    // }
+    setIsOpen(false);
+  };
+
+  const handleBtnDelete = () => {
+    deleteCard(cardId);
   };
 
   return (
@@ -123,20 +188,62 @@ export default function InputCard({
             }}
             value={content}
             onBlur={() => handleBlur()}
-            placeholder="Enter a title of this card ..."
+            placeholder={
+              type === "column"
+                ? "Enter column name"
+                : "Enter a content of this card ..."
+            }
           />
         </Paper>
       </div>
-      <div className={classes.confirm}>
+      {/* confirm & delete button */}
+      {/* <div>
         <Button
           className={classes.btnConfirm}
           onClick={() => handleBtnConfirm()}
         >
           {oldContent ? "Update" : "Save"}
         </Button>
+
         <IconButton onClick={() => handleBtnClear()}>
           <ClearIcon />
         </IconButton>
+      </div> */}
+      <div className={classes.confirm}>
+        <Button
+          variant="contained"
+          // color="primary"
+          size="small"
+          className={classes.btnConfirm}
+          startIcon={<SaveIcon />}
+          onClick={() => handleBtnConfirm()}
+        >
+          Save
+        </Button>
+
+        {oldContent ? (
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            // className={classes.button}
+            startIcon={<DeleteIcon />}
+            onClick={() => handleBtnDelete()}
+          >
+            Delete
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="default"
+            size="small"
+            // className={classes.button}
+            startIcon={<ClearIcon />}
+            onClick={() => handleBtnCancel()}
+          >
+            Cancel
+          </Button>
+        )}
       </div>
     </div>
   );

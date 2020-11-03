@@ -157,18 +157,24 @@ export default function InputCard({
       // update but content is null => delete
       setContent(oldContent);
     }
+    // else if (oldContent) {
+    //   setContent(oldContent);
+    // }
+    // không handle chỗ này sẽ tốt hơn trong trường hợp người dùng đang edit và bấm mis chuột ra ngoài,
+    // khi bấm lại sẽ vẫn giữ được nội dung đang edit
+    // muốn khung edit có nội dung hiện tại của card thì xóa hết đi và bẩm ra ngoài là được
     setIsOpen(false);
   };
 
   const handleBtnCancel = () => {
-    // if (oldContent) {
-    //   // updating but hit the clear button
-    //   setIsOpen(false);
-    // } else {
-    //   setIsOpen(false);
-    //   setContent("");
-    // }
-    setIsOpen(false);
+    if (oldContent) {
+      // updating but hit the clear button
+      setIsOpen(false);
+    } else {
+      setIsOpen(false);
+      setContent("");
+    }
+    // setIsOpen(false);
   };
 
   const handleBtnDelete = () => {
@@ -218,7 +224,7 @@ export default function InputCard({
           startIcon={<SaveIcon />}
           onClick={() => handleBtnConfirm()}
         >
-          Save
+          {oldContent ? "Update" : "Save"}
         </Button>
 
         {oldContent ? (

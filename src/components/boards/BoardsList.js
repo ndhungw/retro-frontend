@@ -133,7 +133,7 @@ export default function BoardsList({ user }) {
               color="textPrimary"
               gutterBottom
             >
-              My Board
+              My Boards
             </Typography>
             {/* <Typography
               variant="h5"

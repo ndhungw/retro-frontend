@@ -15,7 +15,14 @@ export default function BoardItem({ board, classes }) {
   return (
     <Grid item key={board._id} xs={12} sm={6} md={4}>
       <Card className={classes.card}>
-        <CardActionArea component={Link} to={`/boards/${board._id}`}>
+        {/* <CardActionArea component={Link} to={`/boards/${board._id}`}> */}
+        <CardActionArea
+          component={Link}
+          to={{
+            pathname: `/boards/${board._id}`,
+            board: board,
+          }}
+        >
           <CardMedia
             className={classes.cardMedia}
             image="https://source.unsplash.com/random"

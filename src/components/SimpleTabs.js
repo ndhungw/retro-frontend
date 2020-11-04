@@ -65,12 +65,12 @@ export default function SimpleTabs() {
       <CssBaseline />
       <div className={classes.root}>
         <AppBar position="relative">
-          <Toolbar>
+          {/* <Toolbar>
             <GradientIcon className={classes.icon} />
             <Typography variant="h6" color="inherit" noWrap>
               FunRetroClone
             </Typography>
-          </Toolbar>
+          </Toolbar> */}
           <Tabs
             value={value}
             onChange={handleChange}
@@ -82,7 +82,11 @@ export default function SimpleTabs() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <BoardsList></BoardsList>
+          <BoardsList
+            user={{
+              _id: "5f942dfe446aa806e46b07a9",
+            }}
+          ></BoardsList>
         </TabPanel>
         <TabPanel value={value} index={1}>
           TEAM PAGE

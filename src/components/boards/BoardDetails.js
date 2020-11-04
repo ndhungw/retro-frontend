@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Column from "../columns/Column";
 import { StoreContext } from "../../utils/store";
@@ -35,7 +35,7 @@ export default function BoardDetails() {
       setContextColumns(columns);
     }
     getAllColumnsFromBoard(id);
-  }, [id]);
+  });
 
   return (
     <React.Fragment>

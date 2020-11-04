@@ -58,7 +58,7 @@ export default function Title({ columnName, columnId }) {
         name: newColName,
       }
     );
-    // console.log(response);
+    console.log(response);
 
     setIsEditing(!isEditing);
   };

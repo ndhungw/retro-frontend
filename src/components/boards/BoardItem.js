@@ -9,7 +9,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import { Link } from "react-router-dom";
 import { CardActionArea } from "@material-ui/core";
-// import Card from "../columns/Card";
 import Card from "@material-ui/core/Card";
 
 export default function BoardItem({ board, classes }) {

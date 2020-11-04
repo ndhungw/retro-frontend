@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { InputBase, Paper, Button, IconButton } from "@material-ui/core";
+import { InputBase, Paper, Button } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fade, makeStyles } from "@material-ui/core/styles";
 

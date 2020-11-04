@@ -9,6 +9,7 @@ function App() {
     <StoreContextProvider>
       <Router>
         <Route path="/" exact component={SimpleTabs} />
+        <Route path="/boards" exact component={SimpleTabs} />
         <Route path="/boards/:id" component={BoardDetails} />
       </Router>
     </StoreContextProvider>

@@ -1,11 +1,6 @@
 import "./App.css";
 import SimpleTabs from "./components/SimpleTabs";
-import {
-  BrowserRouter as Router,
-  Link,
-  NavLink,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import GradientIcon from "@material-ui/icons/Gradient";

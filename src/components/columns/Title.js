@@ -2,10 +2,6 @@ import React, { useState, useContext } from "react";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import { makeStyles } from "@material-ui/core/styles";
-// import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
@@ -119,9 +115,6 @@ export default function Title({ columnName, columnId }) {
           </Typography>
         </div>
       )}
-      {/* <IconButton aria-label="more" size="small">
-        <MoreVertIcon />
-      </IconButton> */}
       <Button
         size="small"
         variant="contained"

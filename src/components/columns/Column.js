@@ -28,7 +28,7 @@ export default function Column({ column }) {
       setContextCards(response.data); // get all the cards of all columns of all boards
     }
     getAllCardsFromColumn(column._id);
-  }, []);
+  }, [column._id, setContextCards]);
 
   return (
     <div>

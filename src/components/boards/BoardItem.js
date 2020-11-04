@@ -10,17 +10,19 @@ import ScheduleIcon from "@material-ui/icons/Schedule";
 import { Link } from "react-router-dom";
 import { CardActionArea } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
+import IconButton from "@material-ui/core/IconButton";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 export default function BoardItem({ board, classes }) {
   return (
     <Grid item key={board._id} xs={12} sm={6} md={4}>
       <Card className={classes.card}>
-        {/* <CardActionArea component={Link} to={`/boards/${board._id}`}> */}
         <CardActionArea
           component={Link}
           to={{
             pathname: `/boards/${board._id}`,
-            board: board,
+            // pathname: `/boards?id=${board._id}`,
+            // board: board,
           }}
         >
           <CardMedia
@@ -45,6 +47,9 @@ export default function BoardItem({ board, classes }) {
           <Button size="small" color="primary">
             CLONE
           </Button>
+          <IconButton aria-label="more" size="small">
+            <MoreVertIcon />
+          </IconButton>
         </CardActions>
       </Card>
     </Grid>

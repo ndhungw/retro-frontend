@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from "react";
-// import AppBar from "@material-ui/core/AppBar";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-// import CssBaseline from "@material-ui/core/CssBaseline";
-// import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
-// import GradientIcon from "@material-ui/icons/Gradient";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
+
+// Dialog
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import BoardItem from "./BoardItem";
 import axios from "axios";
+import { StoreContext } from "../../utils/store";
 
 function Copyright() {
   return (
@@ -59,24 +64,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-export default function BoardsList() {
+export default function BoardsList({ user }) {
   const classes = useStyles();
-  const [boards, setBoardsList] = useState([]);
+  const [openAddBoarDialog, setOpenAddBoarDialog] = useState(false);
+  const [newBoardName, setNewBoardName] = useState("New board");
+  const { contextBoards, setContextBoards } = useContext(StoreContext);
 
   useEffect(() => {
     async function getAllBoards() {
-      // const response = await axios.get("http://localhost:4000/boards");
       const response = await axios.get(
         "https://retro-clone-api.herokuapp.com/boards"
       );
       const boards = response.data;
-      // console.log(boards);
-      setBoardsList(boards);
+      setContextBoards(boards);
     }
     getAllBoards();
-  }, []);
+  }, [user, setContextBoards]);
+
+  const handleClose = () => {
+    setOpenAddBoarDialog(false);
+  };
+
+  const handleCreate = async () => {
+    const board = {
+      name: newBoardName,
+      userId: user._id,
+    };
+
+    // update DB
+    const response = await axios.post(
+      // `http://localhost:4000/boards/add`,
+      `https://retro-clone-api.herokuapp.com/boards/add`,
+      board
+    );
+    const newBoard = response.data;
+    console.log(newBoard);
+
+    // update frontend
+    setContextBoards([...contextBoards, newBoard]);
+
+    setOpenAddBoarDialog(false);
+  };
+
+  const handleChangeTextField = (e) => {
+    setNewBoardName(e.target.value);
+  };
 
   return (
     <React.Fragment>
@@ -103,7 +135,7 @@ export default function BoardsList() {
             >
               My Board
             </Typography>
-            <Typography
+            {/* <Typography
               variant="h5"
               align="center"
               color="textSecondary"
@@ -112,7 +144,7 @@ export default function BoardsList() {
               Something short and leading about the collection below—its
               contents, the creator, etc. Make it short and sweet, but not too
               short so folks don&apos;t simply skip over it entirely.
-            </Typography>
+            </Typography> */}
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
@@ -121,15 +153,64 @@ export default function BoardsList() {
                     color="primary"
                     size="large"
                     startIcon={<AddCircleOutlinedIcon />}
+                    onClick={() => setOpenAddBoarDialog(true)}
                   >
                     Add a new board
                   </Button>
+                  <Dialog
+                    open={openAddBoarDialog}
+                    onClose={handleClose}
+                    aria-labelledby="form-dialog-title"
+                  >
+                    <DialogTitle id="form-dialog-title">
+                      Create a new board
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        <Typography>Create a new empty board.</Typography>
+                        <Typography>
+                          You can add columns by yourself later.
+                        </Typography>
+                      </DialogContentText>
+
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Board Name"
+                        defaultValue="New board"
+                        helperText="Enter name of the board"
+                        onChange={(e) => handleChangeTextField(e)}
+                        // type="search"
+                        required
+                        fullWidth
+                        on
+                      />
+                    </DialogContent>
+
+                    <DialogActions>
+                      <Button
+                        onClick={handleCreate}
+                        variant="contained"
+                        color="primary"
+                      >
+                        CREATE
+                      </Button>
+                      <Button
+                        onClick={handleClose}
+                        variant="outlined"
+                        color="default"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <Button variant="outlined" color="primary">
                     See all boards
                   </Button>
-                </Grid>
+                </Grid> */}
               </Grid>
             </div>
           </Container>
@@ -143,9 +224,11 @@ export default function BoardsList() {
             alignItems="center"
             spacing={3}
           >
-            {boards.map((board) => (
-              <BoardItem key={board._id} board={board} classes={classes} />
-            ))}
+            {contextBoards
+              .filter((board) => board.userId === user._id)
+              .map((board) => (
+                <BoardItem key={board._id} board={board} classes={classes} />
+              ))}
           </Grid>
         </Container>
       </main>

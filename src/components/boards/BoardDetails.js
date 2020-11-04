@@ -1,17 +1,27 @@
 import axios from "axios";
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Column from "../columns/Column";
 import { StoreContext } from "../../utils/store";
 import InputContainer from "../Input/InputContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import { InputBase } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const useStyle = makeStyles((theme) => ({
+  boardTitle: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   columnsContainer: {
     display: "flex",
-    minHeight: "100vh",
     flexWrap: "wrap",
   },
   column: {
@@ -32,15 +42,28 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export default function BoardDetails() {
+  // const { board } = useLocation();
   const { id } = useParams();
+  const [board, setBoard] = useState({});
   const { contextColumns, setContextColumns } = useContext(StoreContext);
+  const history = useHistory();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const classes = useStyle();
-  const { board } = useLocation();
-  const [boardName, setBoardName] = useState(board.name);
 
   useEffect(() => {
+    async function getBoard(boardId) {
+      const response = await axios.get(
+        // `http://localhost:4000/boards/${boardId}`
+        `https://retro-clone-api.herokuapp.com/boards/${boardId}`
+      );
+      setBoard(response.data);
+    }
+    getBoard(id);
+
     async function getAllColumnsFromBoard(boardId) {
-      const response = await axios.get("http://localhost:4000/columns");
+      const response = await axios.get(
+        "https://retro-clone-api.herokuapp.com/columns"
+      );
       const columns = response.data.filter(
         (column) => column.boardId === boardId
       );
@@ -50,33 +73,97 @@ export default function BoardDetails() {
   }, [id, setContextColumns]);
 
   const handleBoardNameChange = (e) => {
-    setBoardName(e.target.value);
+    setBoard({
+      name: e.target.value,
+    });
   };
   const handleBlur = async () => {
     // update DB
     const response = await axios.post(
-      `http://localhost:4000/boards/update/${board._id}`,
+      // `http://localhost:4000/boards/update/${id}`,
+      `https://retro-clone-api.herokuapp.com/boards/update/${id}`,
       {
-        name: boardName,
+        name: board.name,
       }
     );
     console.log(response);
   };
 
+  const handleDeleteBoard = async () => {
+    // update DB
+    // const response = await axios.delete(`http://localhost:4000/boards/${id}`);
+    const response = await axios.delete(
+      `https://retro-clone-api.herokuapp.com/boards/${id}`
+    );
+    console.log(response.data);
+
+    history.goBack();
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleAcceptDeleteDialog = () => {
+    handleDeleteBoard();
+    setOpenDeleteDialog(false);
+  };
+
   return (
     <React.Fragment>
-      <div>
+      <div className={classes.boardTitle}>
         <InputBase
           className={classes.columnNameInput}
-          value={boardName}
+          value={board.name}
           onChange={(e) => handleBoardNameChange(e)}
-          // autoFocus
           inputProps={{
             className: classes.input,
           }}
           fullWidth
           onBlur={() => handleBlur()}
         ></InputBase>
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          startIcon={<DeleteIcon />}
+          onClick={() => setOpenDeleteDialog(true)}
+        >
+          Delete board
+        </Button>
+        <Dialog
+          open={openDeleteDialog}
+          onClose={handleCloseDeleteDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Delete this board?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              This action will not be able to revert!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleAcceptDeleteDialog}
+              variant="contained"
+              color="secondary"
+              autoFocus
+            >
+              Yes, delete it!
+            </Button>
+            <Button
+              onClick={handleCloseDeleteDialog}
+              variant="contained"
+              color="default"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
       <div className={classes.columnsContainer}>
         {contextColumns.map((column) => (

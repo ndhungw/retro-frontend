@@ -21,8 +21,6 @@ export default function BoardItem({ board, classes }) {
           component={Link}
           to={{
             pathname: `/boards/${board._id}`,
-            // pathname: `/boards?id=${board._id}`,
-            // board: board,
           }}
         >
           <CardMedia

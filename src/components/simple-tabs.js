@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-import BoardsList from "./boards/BoardsList";
+import BoardsList from "./boards/board-list";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
 export default function SimpleTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const user = {
+    _id: "5f942e17446aa806e46b07ab",
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -80,11 +83,7 @@ export default function SimpleTabs() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <BoardsList
-            user={{
-              _id: "5f942dfe446aa806e46b07a9",
-            }}
-          ></BoardsList>
+          <BoardsList user={user}></BoardsList>
         </TabPanel>
         <TabPanel value={value} index={1}>
           TEAM PAGE

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { InputBase, Paper, Button } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fade, makeStyles } from "@material-ui/core/styles";
@@ -7,7 +7,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import SaveIcon from "@material-ui/icons/Save";
 
 import axios from "axios";
-import { StoreContext } from "../../utils/store";
 
 const useStyle = makeStyles((theme) => ({
   card: {
@@ -39,11 +38,13 @@ export default function InputCard({
   authorId,
   oldContent,
   setIsOpen,
+  addCardFromColumn,
+  deleteCardFromColumn,
+  updateCardFromColumn,
+  addColumnFromBoard,
 }) {
   const classes = useStyle();
   const [content, setContent] = useState(oldContent ? oldContent : "");
-  const { contextCards, setContextCards } = useContext(StoreContext);
-  const { contextColumns, setContextColumns } = useContext(StoreContext);
 
   const handleChange = (e) => {
     setContent(e.target.value);
@@ -68,10 +69,12 @@ export default function InputCard({
       newCard
     );
 
-    setContextCards([...contextCards, response.data]);
+    addCardFromColumn(response.data);
+
+    // setContextCards([...contextCards, response.data]);
     setIsOpen(false);
 
-    console.log("FROM INPUTCARD.addCard: " + response.data);
+    // console.log("FROM INPUTCARD.addCard: " + response.data);
     setContent("");
   };
 
@@ -83,7 +86,8 @@ export default function InputCard({
     console.log(response);
 
     // update frontend
-    setContextCards(contextCards.filter((card) => card._id !== cardId));
+    // setContextCards(contextCards.filter((card) => card._id !== cardId));
+    deleteCardFromColumn(cardId);
 
     setIsOpen(false);
   };
@@ -93,34 +97,19 @@ export default function InputCard({
       // update but content is null => delete
       deleteCard(cardId);
     } else {
-      // update the contextCards to fast update frontend
-      const updatedContextCards = contextCards.map((card) => {
-        if (card._id === cardId) {
-          card.content = content;
-        }
-        return card;
-      });
-
-      setContextCards(updatedContextCards);
-
-      // update DB
-      const response = await axios.get(
-        `https://retro-clone-api.herokuapp.com/cards/${cardId}`
-      );
-      const cardFound = response.data;
-      console.log("cardFound: " + cardFound);
-
-      cardFound.content = content;
       const updateResponse = await axios.post(
-        // `http://localhost:4000/cards/update/${cardId}`,
-        `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
+        `http://localhost:4000/cards/update/${cardId}`,
+        // `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
         {
-          authorId: cardFound.authorId,
-          content: cardFound.content,
-          columnId: cardFound.columnId,
+          // authorId: cardFound.authorId,
+          // content: cardFound.content,
+          // columnId: cardFound.columnId,
+          content: content,
         }
       );
-      console.log(updateResponse);
+      console.log("UpdateResponse");
+      console.log(updateResponse.data);
+      updateCardFromColumn(updateResponse.data);
     }
   };
 
@@ -136,7 +125,10 @@ export default function InputCard({
     const newColumn = response.data;
 
     if (newColumn) {
-      setContextColumns([...contextColumns, newColumn]);
+      // setContextColumns([...contextColumns, newColumn]);
+      console.log("InputCard calls addColumnFromBoard");
+      console.log(newColumn);
+      addColumnFromBoard(newColumn);
     } else {
       // render 1 the? bao loi
     }

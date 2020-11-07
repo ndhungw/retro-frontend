@@ -1,9 +1,6 @@
 import axios from "axios";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import Column from "../columns/Column";
-import { StoreContext } from "../../utils/store";
-import InputContainer from "../Input/InputContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import { InputBase } from "@material-ui/core";
@@ -14,6 +11,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+
+import Column from "../columns/column";
+import InputContainer from "../input/input-container";
 
 const useStyle = makeStyles((theme) => ({
   boardTitle: {
@@ -42,12 +42,11 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export default function BoardDetails() {
-  // const { board } = useLocation();
   const { id } = useParams();
   const [board, setBoard] = useState({});
-  const { contextColumns, setContextColumns } = useContext(StoreContext);
-  const history = useHistory();
+  const [columns, setColumns] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const history = useHistory();
   const classes = useStyle();
 
   useEffect(() => {
@@ -67,10 +66,10 @@ export default function BoardDetails() {
       const columns = response.data.filter(
         (column) => column.boardId === boardId
       );
-      setContextColumns(columns);
+      setColumns(columns);
     }
     getAllColumnsFromBoard(id);
-  }, [id, setContextColumns]);
+  }, [id]);
 
   const handleBoardNameChange = (e) => {
     setBoard({
@@ -91,8 +90,8 @@ export default function BoardDetails() {
 
   const handleDeleteBoard = async () => {
     // update DB
-    // const response = await axios.delete(`http://localhost:4000/boards/${id}`);
     const response = await axios.delete(
+      // `http://localhost:4000/boards/${id}`,
       `https://retro-clone-api.herokuapp.com/boards/${id}`
     );
     console.log(response.data);
@@ -107,6 +106,25 @@ export default function BoardDetails() {
   const handleAcceptDeleteDialog = () => {
     handleDeleteBoard();
     setOpenDeleteDialog(false);
+  };
+
+  const addColumnFromBoard = (newColumn) => {
+    setColumns([...columns, newColumn]);
+  };
+
+  const deleteColumnFromBoard = (columnId) => {
+    setColumns(columns.filter((column) => column._id !== columnId));
+  };
+
+  const changeColumnNameFromBoard = (columnId, newColumnName) => {
+    setColumns(
+      columns.map((column) => {
+        if (column._id === columnId) {
+          column.name = newColumnName;
+        }
+        return column;
+      })
+    );
   };
 
   return (
@@ -166,15 +184,23 @@ export default function BoardDetails() {
         </Dialog>
       </div>
       <div className={classes.columnsContainer}>
-        {contextColumns.map((column) => (
-          <Column key={column._id} column={column} />
+        {columns.map((column) => (
+          <Column
+            key={column._id}
+            column={column}
+            deleteColumnFromBoard={deleteColumnFromBoard}
+            changeColumnNameFromBoard={changeColumnNameFromBoard}
+          />
         ))}
 
         {/* The new col to add stands on the right of columns */}
         <div>
           <Paper elevation={3} className={classes.column}>
-            {/* <InputContainer columnId={column._id} authorId="123test" /> */}
-            <InputContainer type="column" boardId={id} />
+            <InputContainer
+              addColumnFromBoard={addColumnFromBoard}
+              type="column"
+              boardId={id}
+            />
           </Paper>
         </div>
       </div>

@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -10,7 +11,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-import { StoreContext } from "../../utils/store";
 import axios from "axios";
 
 const useStyle = makeStyles((theme) => ({
@@ -35,15 +35,19 @@ const useStyle = makeStyles((theme) => ({
     fontSize: "1.2rem",
     fontWeight: "bold",
   },
-  btnDeleteColumn: {
-    margin: theme.spacing(1),
+  iconBtnDeleteColumns: {
+    marginRight: theme.spacing(1),
   },
 }));
-export default function Title({ columnName, columnId }) {
+export default function Title({
+  columnName,
+  columnId,
+  deleteColumnFromBoard,
+  changeColumnNameFromBoard,
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const classes = useStyle();
   const [newColName, setNewColName] = useState(columnName);
-  const { contextColumns, setContextColumns } = useContext(StoreContext);
   const [openDeleteColumnDialog, setOpenDeleteColumnDialog] = useState(false);
 
   const handleChange = (e) => {
@@ -52,17 +56,9 @@ export default function Title({ columnName, columnId }) {
 
   const handleBlur = async () => {
     // update frontend
-    setContextColumns(
-      contextColumns.map((column) => {
-        if (column._id === columnId) {
-          column.name = newColName;
-        }
-        return column;
-      })
-    );
+    changeColumnNameFromBoard(columnId, newColName);
 
     // update DB
-    // console.log(columnId);
     const response = await axios.post(
       // `http://localhost:4000/columns/update/${columnId}`,
       `https://retro-clone-api.herokuapp.com/columns/update/${columnId}`,
@@ -81,9 +77,7 @@ export default function Title({ columnName, columnId }) {
 
   const handleAcceptDeleteColumnDialog = async () => {
     // update frontend
-    setContextColumns(
-      contextColumns.filter((column) => column._id !== columnId)
-    );
+    deleteColumnFromBoard(columnId);
     // update DB
     const response = await axios.delete(
       `https://retro-clone-api.herokuapp.com/columns/${columnId}`
@@ -115,16 +109,13 @@ export default function Title({ columnName, columnId }) {
           </Typography>
         </div>
       )}
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        className={classes.btnDeleteColumn}
-        startIcon={<DeleteIcon />}
+      <IconButton
+        aria-label="delete"
+        className={classes.iconBtnDeleteColumns}
         onClick={() => setOpenDeleteColumnDialog(true)}
       >
-        Delete
-      </Button>
+        <DeleteIcon fontSize="small" />
+      </IconButton>
       <Dialog
         open={openDeleteColumnDialog}
         onClose={handleCloseDeleteColumnDialog}

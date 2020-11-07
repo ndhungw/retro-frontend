@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { Collapse } from "@material-ui/core";
-import InputCard from "./InputCard";
+import InputCard from "./input-card";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -21,7 +21,14 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function InputContainer({ type, boardId, columnId, authorId }) {
+export default function InputContainer({
+  type,
+  boardId,
+  columnId,
+  authorId,
+  addCardFromColumn,
+  addColumnFromBoard,
+}) {
   const classes = useStyle();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,6 +41,8 @@ export default function InputContainer({ type, boardId, columnId, authorId }) {
           columnId={columnId}
           authorId={authorId}
           setIsOpen={setIsOpen}
+          addCardFromColumn={addCardFromColumn}
+          addColumnFromBoard={addColumnFromBoard}
         />
       </Collapse>
       <Collapse in={!isOpen}>

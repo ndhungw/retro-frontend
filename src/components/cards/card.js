@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles, fade } from "@material-ui/core/styles";
-import InputCard from "../Input/InputCard";
+import InputCard from "../input/input-card";
 import { Collapse, Typography } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
@@ -19,7 +19,11 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function Card({ card }) {
+export default function Card({
+  card,
+  deleteCardFromColumn,
+  updateCardFromColumn,
+}) {
   const classes = useStyle();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -33,6 +37,8 @@ export default function Card({ card }) {
           authorId={card.authorId}
           setIsOpen={setIsOpen}
           oldContent={card.content ? card.content : null}
+          deleteCardFromColumn={deleteCardFromColumn}
+          updateCardFromColumn={updateCardFromColumn}
         />
       </Collapse>
       <Collapse in={!isOpen}>

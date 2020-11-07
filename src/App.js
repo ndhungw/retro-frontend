@@ -1,5 +1,5 @@
 import "./App.css";
-import SimpleTabs from "./components/SimpleTabs";
+import SimpleTabs from "./components/simple-tabs";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
@@ -7,7 +7,7 @@ import GradientIcon from "@material-ui/icons/Gradient";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 
-import BoardDetails from "./components/boards/BoardDetails";
+import BoardDetails from "./components/boards/board-details";
 import StoreContextProvider from "./utils/store";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
+
   return (
     <StoreContextProvider>
       <Router>
@@ -47,11 +48,42 @@ function App() {
           </Toolbar>
         </AppBar>
 
-        <Route path="/" exact component={SimpleTabs} />
-        <Route path="/boards" exact component={SimpleTabs} />
-        <Route path="/boards/:id" component={BoardDetails} />
+        <main>
+          <Route path="/" exact component={SimpleTabs} />
+          <Route path="/boards" exact component={SimpleTabs} />
+          <Route path="/boards/:id" component={BoardDetails} />
+        </main>
+        {/* Footer */}
+        <footer className={classes.footer}>
+          <Typography variant="h6" align="center" gutterBottom>
+            Footer
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="textSecondary"
+            component="p"
+          >
+            Something here to give the footer a purpose!
+          </Typography>
+          <Copyright />
+        </footer>
+        {/* End footer */}
       </Router>
     </StoreContextProvider>
+  );
+}
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Link color="inherit" href="https://material-ui.com/">
+        1712481@fit
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
   );
 }
 

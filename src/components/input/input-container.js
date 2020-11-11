@@ -25,7 +25,7 @@ export default function InputContainer({
   type,
   boardId,
   columnId,
-  authorId,
+  userId,
   addCardFromColumn,
   addColumnFromBoard,
 }) {
@@ -39,7 +39,7 @@ export default function InputContainer({
           type={type}
           boardId={boardId}
           columnId={columnId}
-          authorId={authorId}
+          userId={userId}
           setIsOpen={setIsOpen}
           addCardFromColumn={addCardFromColumn}
           addColumnFromBoard={addColumnFromBoard}

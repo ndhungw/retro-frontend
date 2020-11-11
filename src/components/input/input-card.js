@@ -35,7 +35,7 @@ export default function InputCard({
   boardId,
   columnId,
   cardId,
-  authorId,
+  userId,
   oldContent,
   setIsOpen,
   addCardFromColumn,
@@ -59,13 +59,13 @@ export default function InputCard({
 
     const newCard = {
       content,
-      authorId,
+      userId,
       columnId,
     };
 
     const response = await axios.post(
-      "https://retro-clone-api.herokuapp.com/cards/add",
-      // "http://localhost:4000/cards/add",
+      // "https://retro-clone-api.herokuapp.com/cards/add",
+      "http://localhost:4000/cards/add",
       newCard
     );
 
@@ -80,8 +80,8 @@ export default function InputCard({
 
   const deleteCard = async (cardId) => {
     const response = await axios.delete(
-      // `http://localhost:4000/cards/${cardId}`
-      `https://retro-clone-api.herokuapp.com/cards/${cardId}`
+      `http://localhost:4000/cards/${cardId}`
+      // `https://retro-clone-api.herokuapp.com/cards/${cardId}`
     );
     console.log(response);
 
@@ -101,7 +101,7 @@ export default function InputCard({
         `http://localhost:4000/cards/update/${cardId}`,
         // `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
         {
-          // authorId: cardFound.authorId,
+          // userId: cardFound.userId,
           // content: cardFound.content,
           // columnId: cardFound.columnId,
           content: content,
@@ -110,13 +110,14 @@ export default function InputCard({
       console.log("UpdateResponse");
       console.log(updateResponse.data);
       updateCardFromColumn(updateResponse.data);
+      setIsOpen(false);
     }
   };
 
   const addColumn = async () => {
     const response = await axios.post(
-      // "http://localhost:4000/columns/add",
-      "https://retro-clone-api.herokuapp.com/columns/add",
+      "http://localhost:4000/columns/add",
+      // "https://retro-clone-api.herokuapp.com/columns/add",
       {
         name: content,
         boardId: boardId,
@@ -191,7 +192,7 @@ export default function InputCard({
               className: classes.input,
             }}
             value={content}
-            onBlur={() => handleBlur()}
+            // onBlur={() => handleBlur()}
             placeholder={
               type === "column"
                 ? "Enter column name"

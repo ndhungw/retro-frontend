@@ -51,6 +51,7 @@ export default function BoardDetails() {
   const classes = useStyle();
 
   useEffect(() => {
+    console.log("board-details: useEffect");
     async function getBoard(boardId) {
       const response = await axios.get(
         `http://localhost:4000/boards/${boardId}`
@@ -152,51 +153,53 @@ export default function BoardDetails() {
     if (sourceColumnId === destinationColumnId) {
       // console.log(sourceColumnId);
 
-      // get the list of card ids
-      const getColumnResponse = await axios.get(
-        `http://localhost:4000/columns/${sourceColumnId}`
-      );
-      const cardIdsList = getColumnResponse.data.cardIdsList;
+      // get data of the source Column
+      // const getColumnResponse = await axios.get(
+      //   `http://localhost:4000/columns/${sourceColumnId}`
+      // );
+      // const columnToChange = getColumnResponse.data;
+      const columnToChange = columns.filter(
+        (column) => column._id === destination.droppableId
+      )[0];
+      console.log("get columnToChange from columns.filter :)", columnToChange);
+
+      const cardIdsList = columnToChange.cardIdsList;
       // console.log("source: cardIdsList", cardIdsList);
 
-      // .splice(start, deleteCount, item1, item2, ...)
-      // swap 1 & 3
-      // 0 1 2 3 4 - initial status
-      // 0 3 2 3 4 - replace source with destination at source.index
-      // 0 3 2 1 4 - replace destination with source at destination.index
+      // change the list
       const newCardIdsList = cardIdsList.slice();
-      // console.log("copy of cardIdsList: ", newCardIdsList);
-
-      // const sourceCardId = newCardIdsList.splice(
-      //   source.index,
-      //   1,
-      //   newCardIdsList[destination.index]
-      // )[0];
-      // // console.log("newCardIdsList mod 1", newCardIdsList);
-      // newCardIdsList.splice(destination.index, 1, sourceCardId);
-      // // console.log("newCardIdsList mod 2", newCardIdsList);
-
+      // [].splice(start, deleteCount, item1, item2, ...)
       newCardIdsList.splice(source.index, 1);
       newCardIdsList.splice(destination.index, 0, draggableId);
 
+      columnToChange.cardIdsList = newCardIdsList;
+      console.log("columnToChange", columnToChange);
+
+      // update frontend first
+      setColumns(
+        columns.map((column) =>
+          column._id === columnToChange._id ? columnToChange : column
+        )
+      );
+
+      console.log("updated (setColumns");
       const columnUpdateResponse = await axios.post(
         `http://localhost:4000/columns/update/${sourceColumnId}`,
         {
           cardIdsList: newCardIdsList,
         }
       );
-      // console.log("columnUpdateResponse: ", columnUpdateResponse);
+      console.log("updated (post column)");
 
-      // update columns (state)
-      const updatedColumn = columnUpdateResponse.data;
-      // console.log("updatedColumn:", updatedColumn);
+      // // update columns (state)
+      // const updatedColumn = columnUpdateResponse.data;
+      // // console.log("updatedColumn:", updatedColumn);
 
-      // console.log("columnsInState:", columns);
-      const newColumnsList = columns.map((column) =>
-        column._id === updatedColumn._id ? updatedColumn : column
-      );
-      console.log("newColumnsList", newColumnsList); // update column to reupdate state ----here
-      setColumns(newColumnsList);
+      // const newColumnsList = columns.map((column) =>
+      //   column._id === updatedColumn._id ? updatedColumn : column
+      // );
+      // console.log("newColumnsList", newColumnsList); // update column to reupdate state ----here
+      // setColumns(newColumnsList);
     }
   };
 

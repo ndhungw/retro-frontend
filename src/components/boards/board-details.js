@@ -49,9 +49,16 @@ export default function BoardDetails() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const history = useHistory();
   const classes = useStyle();
+  const [allCards, setAllCards] = useState([]);
 
   useEffect(() => {
-    console.log("board-details: useEffect");
+    async function getAllCards() {
+      const response = await axios.get(`http://localhost:4000/cards`);
+      setAllCards(response.data);
+      console.log("getAllCards: ", response.data);
+    }
+    getAllCards();
+
     async function getBoard(boardId) {
       const response = await axios.get(
         `http://localhost:4000/boards/${boardId}`
@@ -64,13 +71,10 @@ export default function BoardDetails() {
     async function getAllColumnsFromBoard(boardId) {
       const response = await axios.get(
         // "https://retro-clone-api.herokuapp.com/columns"
-        "http://localhost:4000/columns"
+        `http://localhost:4000/columns?boardId=${boardId}`
       );
-      const columns = response.data.filter(
-        (column) => column.boardId === boardId
-      );
+      const columns = response.data;
       setColumns(columns);
-      console.log("setColumns trong state: ", columns);
     }
     getAllColumnsFromBoard(id);
   }, [id]);
@@ -153,11 +157,6 @@ export default function BoardDetails() {
     if (sourceColumnId === destinationColumnId) {
       // console.log(sourceColumnId);
 
-      // get data of the source Column
-      // const getColumnResponse = await axios.get(
-      //   `http://localhost:4000/columns/${sourceColumnId}`
-      // );
-      // const columnToChange = getColumnResponse.data;
       const columnToChange = columns.filter(
         (column) => column._id === destination.droppableId
       )[0];
@@ -189,21 +188,53 @@ export default function BoardDetails() {
           cardIdsList: newCardIdsList,
         }
       );
-      console.log("updated (post column)");
-
-      // // update columns (state)
-      // const updatedColumn = columnUpdateResponse.data;
-      // // console.log("updatedColumn:", updatedColumn);
-
-      // const newColumnsList = columns.map((column) =>
-      //   column._id === updatedColumn._id ? updatedColumn : column
-      // );
-      // console.log("newColumnsList", newColumnsList); // update column to reupdate state ----here
-      // setColumns(newColumnsList);
+      console.log("updated (post column)", columnUpdateResponse);
     }
   };
 
-  const updateOrderOfCardsOnColumn = (cards) => {};
+  // const getCardsListOfColumn = async (column, cards) => {
+  //   console.log("getCardsListOfColumn");
+  //   console.log("column", column);
+  //   console.log("cards", cards);
+  //   // if (!cards) {
+  //   //   await getAllCards();
+  //   // }
+  //   const result = column.cardIdsList.map((cardId) => {
+  //     const filtered = cards.filter((card) => {
+  //       console.log("card in filter", card);
+  //       if (card._id.toString() === cardId.toString()) {
+  //         return card;
+  //       }
+  //       return {};
+  //     })[0];
+  //     return filtered;
+  //   });
+
+  //   return result;
+  // };
+
+  const addCardFromColumn = async (newCard) => {
+    console.log("allCards before", allCards);
+    setAllCards([...allCards, newCard]);
+    const newColumns = columns.map((column) => {
+      if (column._id === newCard.columnId) {
+        const newCardIdsList = [...column.cardIdsList, newCard._id];
+        column.cardIdsList = newCardIdsList;
+      }
+      return column;
+    });
+    setColumns(newColumns);
+  };
+
+  const updateCardFromColumn = async (newCard) => {
+    setAllCards(
+      allCards.map((card) => (card._id === newCard._id ? newCard : card))
+    );
+  };
+
+  const deleteCardFromColumn = async (cardId) => {
+    setAllCards(allCards.filter((card) => card._id !== cardId));
+  };
 
   return (
     <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
@@ -268,6 +299,17 @@ export default function BoardDetails() {
             column={column}
             deleteColumnFromBoard={deleteColumnFromBoard}
             changeColumnNameFromBoard={changeColumnNameFromBoard}
+            cardsList={column.cardIdsList.map(
+              (cardId) =>
+                allCards.filter(
+                  (card) => card._id.toString() === cardId.toString()
+                )[0]
+            )}
+            // cardsList={getCardsListOfColumn(column, cards)}
+            // allCards={cards}
+            addCardFromColumn={addCardFromColumn}
+            updateCardFromColumn={updateCardFromColumn}
+            deleteCardFromColumn={deleteCardFromColumn}
           />
         ))}
 

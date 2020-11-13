@@ -151,19 +151,19 @@ export default function InputCard({
     }
   };
 
-  const handleBlur = () => {
-    if (!content) {
-      // update but content is null => delete
-      setContent(oldContent);
-    }
-    // else if (oldContent) {
-    //   setContent(oldContent);
-    // }
-    // không handle chỗ này sẽ tốt hơn trong trường hợp người dùng đang edit và bấm mis chuột ra ngoài,
-    // khi bấm lại sẽ vẫn giữ được nội dung đang edit
-    // muốn khung edit có nội dung hiện tại của card thì xóa hết đi và bẩm ra ngoài là được
-    setIsOpen(false);
-  };
+  // const handleBlur = () => {
+  //   if (!content) {
+  //     // update but content is null => delete
+  //     setContent(oldContent);
+  //   }
+  //   // else if (oldContent) {
+  //   //   setContent(oldContent);
+  //   // }
+  //   // không handle chỗ này sẽ tốt hơn trong trường hợp người dùng đang edit và bấm mis chuột ra ngoài,
+  //   // khi bấm lại sẽ vẫn giữ được nội dung đang edit
+  //   // muốn khung edit có nội dung hiện tại của card thì xóa hết đi và bẩm ra ngoài là được
+  //   setIsOpen(false);
+  // };
 
   const handleBtnCancel = () => {
     if (oldContent) {

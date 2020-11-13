@@ -1,11 +1,14 @@
 import { CssBaseline } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  // useState
+} from "react";
 import Title from "./title";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import InputContainer from "../input/input-container";
 import Card from "../cards/card";
-import axios from "axios";
+// import axios from "axios";
 import { Droppable } from "react-beautiful-dnd";
 
 const useStyle = makeStyles((theme) => ({
@@ -23,46 +26,79 @@ export default function Column({
   column,
   deleteColumnFromBoard,
   changeColumnNameFromBoard,
+  cardsList,
+  // allCards,
+  addCardFromColumn,
+  updateCardFromColumn,
+  deleteCardFromColumn,
 }) {
   const classes = useStyle();
-  const [cards, setCards] = useState([]);
+  // const [cards, setCards] = useState([]);
 
-  useEffect(() => {
-    async function getAllCardsFromColumn(columnId) {
-      const response = await axios.get(
-        // `https://retro-clone-api.herokuapp.com/cards?columnId=${columnId}`,
-        `http://localhost:4000/cards?columnId=${columnId}`
-      );
-      // setCards(response.data);
-      //--
-      if (response.data) {
-        const sortedCardsList = sort(response.data, column.cardIdsList);
-        setCards(sortedCardsList);
-        console.log("column.js: setCards OK");
-      }
-    }
-    getAllCardsFromColumn(column._id);
-    function sort(cards, cardIdsList) {
-      const sortedCardsList = cardIdsList.map((cardId) => {
-        const selectedCards = cards.filter((card) => card._id === cardId);
-        return selectedCards[0];
-      });
-      // console.log("sortedCardsList: ", sortedCardsList);
-      return sortedCardsList;
-    }
-  }, [column._id, column.cardIdsList]);
+  useEffect(
+    () => {
+      //     async function getAllCardsFromColumn(columnId) {
+      //       const response = await axios.get(
+      //         // `https://retro-clone-api.herokuapp.com/cards?columnId=${columnId}`,
+      //         `http://localhost:4000/cards?columnId=${columnId}`
+      //       );
+      //       console.log("column.js: useEffect : response.data", response.data);
+      //       setCards(response.data);
+      //     }
+      //     getAllCardsFromColumn(column._id);
+      //     function sort(cards, cardIdsList) {
+      //       const sortedCardsList = cardIdsList.map((cardId) => {
+      //         const selectedCards = cards.filter((card) => card._id === cardId);
+      //         return selectedCards[0];
+      //       });
+      //       // console.log("sortedCardsList: ", sortedCardsList);
+      //       return sortedCardsList;
+      //     }
+      //     const cards = column.cardIdsList.map((cardId) => {
+      //       return allCards.filter(
+      //         (card) => card._id.toString() === cardId.toString()
+      //       )[0];
+      //     });
+      //     setCards(cards);
+      //     setCards(cardsList);
+      //----
+      // const cardsList = column.cardIdsList.map(
+      //   (cardId) =>
+      //     allCards.filter(
+      //       (card) => card._id.toString() === cardId.toString()
+      //     )[0]
+      // );
+      // setCards(cardsList);
+      //-----
+      // setCards(cardsList);
+    },
+    [
+      //     column._id, column.cardIdsList
+    ]
+  );
 
-  const addCardFromColumn = async (newCard) => {
-    setCards([...cards, newCard]);
-  };
+  // const addCardFromColumn = async (newCard) => {
+  //   setCards([...cards, newCard]);
+  //   //--
+  //   // const newCardsList = [...cardsList, newCard];
+  //   // cardsList = newCardsList;
+  // };
 
-  const updateCardFromColumn = async (newCard) => {
-    setCards(cards.map((card) => (card._id === newCard._id ? newCard : card)));
-  };
+  // const updateCardFromColumn = async (newCard) => {
+  //   setCards(cards.map((card) => (card._id === newCard._id ? newCard : card)));
+  //   // --
+  //   // const newCardsList = cardsList.map((card) =>
+  //   //   card._id === newCard._id ? newCard : card
+  //   // );
+  //   // cardsList = newCardsList;
+  // };
 
-  const deleteCardFromColumn = async (cardId) => {
-    setCards(cards.filter((card) => card._id !== cardId));
-  };
+  // const deleteCardFromColumn = async (cardId) => {
+  //   setCards(cards.filter((card) => card._id !== cardId));
+  //   // --
+  //   // const newCardsList = cardsList.filter((card) => card._id !== cardId);
+  //   // cardsList = newCardsList;
+  // };
   return (
     <div>
       <Paper className={classes.root} elevation={3}>
@@ -80,15 +116,19 @@ export default function Column({
               {...provided.droppableProps}
               className={classes.cardContainer}
             >
-              {cards.map((card, index) => (
-                <Card
-                  key={card._id}
-                  card={card}
-                  updateCardFromColumn={updateCardFromColumn}
-                  deleteCardFromColumn={deleteCardFromColumn}
-                  index={index}
-                />
-              ))}
+              {cardsList.map((card, index) =>
+                card ? (
+                  <Card
+                    key={card._id}
+                    card={card}
+                    updateCardFromColumn={updateCardFromColumn}
+                    deleteCardFromColumn={deleteCardFromColumn}
+                    index={index}
+                  />
+                ) : (
+                  <></>
+                )
+              )}
               {provided.placeholder}
             </div>
           )}

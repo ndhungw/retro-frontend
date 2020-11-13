@@ -66,7 +66,7 @@ export default function Title({
         name: newColName,
       }
     );
-    console.log(response);
+    // console.log(response);
 
     setIsEditing(!isEditing);
   };
@@ -83,7 +83,7 @@ export default function Title({
       // `https://retro-clone-api.herokuapp.com/columns/${columnId}`
       `http://localhost:4000/columns/${columnId}`
     );
-    console.log(response);
+    // console.log(response);
     setOpenDeleteColumnDialog(false);
   };
 

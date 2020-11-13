@@ -55,7 +55,7 @@ export default function BoardDetails() {
     async function getAllCards() {
       const response = await axios.get(`http://localhost:4000/cards`);
       setAllCards(response.data);
-      console.log("getAllCards: ", response.data);
+      // console.log("getAllCards: ", response.data);
     }
     getAllCards();
 
@@ -72,8 +72,10 @@ export default function BoardDetails() {
       const response = await axios.get(
         // "https://retro-clone-api.herokuapp.com/columns"
         `http://localhost:4000/columns?boardId=${boardId}`
+        // `http://localhost:4000/columns?boardId=5fadffb391cdfe3a649be7dc`
       );
       const columns = response.data;
+      // console.log("getAllColumnsFromBoard: ", columns);
       setColumns(columns);
     }
     getAllColumnsFromBoard(id);
@@ -93,7 +95,7 @@ export default function BoardDetails() {
         name: board.name,
       }
     );
-    console.log(response);
+    // console.log(response);
   };
 
   const handleDeleteBoard = async () => {
@@ -102,7 +104,7 @@ export default function BoardDetails() {
       `http://localhost:4000/boards/${id}`
       // `https://retro-clone-api.herokuapp.com/boards/${id}`
     );
-    console.log(response.data);
+    // console.log(response.data);
 
     history.goBack();
   };
@@ -135,61 +137,26 @@ export default function BoardDetails() {
     );
   };
 
-  const onDragEnd = async (result) => {
-    const { draggableId, source, destination } = result;
+  const addCardFromColumn = async (newCard) => {
+    setAllCards([...allCards, newCard]);
+    const newColumns = columns.map((column) => {
+      if (column._id === newCard.columnId) {
+        const newCardIdsList = [...column.cardIdsList, newCard._id];
+        column.cardIdsList = newCardIdsList;
+      }
+      return column;
+    });
+    setColumns(newColumns);
+  };
 
-    if (!destination) {
-      return;
-    }
+  const updateCardFromColumn = async (newCard) => {
+    setAllCards(
+      allCards.map((card) => (card._id === newCard._id ? newCard : card))
+    );
+  };
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
-
-    const sourceColumnId = source.droppableId;
-    const destinationColumnId = destination.droppableId;
-    // const cardId = draggableId;
-
-    // check if drag and drop in the same column
-    if (sourceColumnId === destinationColumnId) {
-      // console.log(sourceColumnId);
-
-      const columnToChange = columns.filter(
-        (column) => column._id === destination.droppableId
-      )[0];
-      console.log("get columnToChange from columns.filter :)", columnToChange);
-
-      const cardIdsList = columnToChange.cardIdsList;
-      // console.log("source: cardIdsList", cardIdsList);
-
-      // change the list
-      const newCardIdsList = cardIdsList.slice();
-      // [].splice(start, deleteCount, item1, item2, ...)
-      newCardIdsList.splice(source.index, 1);
-      newCardIdsList.splice(destination.index, 0, draggableId);
-
-      columnToChange.cardIdsList = newCardIdsList;
-      console.log("columnToChange", columnToChange);
-
-      // update frontend first
-      setColumns(
-        columns.map((column) =>
-          column._id === columnToChange._id ? columnToChange : column
-        )
-      );
-
-      console.log("updated (setColumns");
-      const columnUpdateResponse = await axios.post(
-        `http://localhost:4000/columns/update/${sourceColumnId}`,
-        {
-          cardIdsList: newCardIdsList,
-        }
-      );
-      console.log("updated (post column)", columnUpdateResponse);
-    }
+  const deleteCardFromColumn = async (cardId) => {
+    setAllCards(allCards.filter((card) => card._id !== cardId));
   };
 
   // const getCardsListOfColumn = async (column, cards) => {
@@ -213,27 +180,114 @@ export default function BoardDetails() {
   //   return result;
   // };
 
-  const addCardFromColumn = async (newCard) => {
-    console.log("allCards before", allCards);
-    setAllCards([...allCards, newCard]);
-    const newColumns = columns.map((column) => {
-      if (column._id === newCard.columnId) {
-        const newCardIdsList = [...column.cardIdsList, newCard._id];
-        column.cardIdsList = newCardIdsList;
-      }
-      return column;
-    });
-    setColumns(newColumns);
-  };
+  const onDragEnd = async (result) => {
+    const { draggableId, source, destination } = result;
 
-  const updateCardFromColumn = async (newCard) => {
-    setAllCards(
-      allCards.map((card) => (card._id === newCard._id ? newCard : card))
-    );
-  };
+    if (!destination) {
+      return;
+    }
 
-  const deleteCardFromColumn = async (cardId) => {
-    setAllCards(allCards.filter((card) => card._id !== cardId));
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const sourceColumnId = source.droppableId;
+    const destinationColumnId = destination.droppableId;
+    // const cardId = draggableId;
+
+    // check if drag and drop in the same column
+    if (sourceColumnId === destinationColumnId) {
+      const columnToChange = columns.filter(
+        (column) => column._id === destination.droppableId
+      )[0];
+      // console.log("get columnToChange from columns.filter :)", columnToChange);
+      const cardIdsList = columnToChange.cardIdsList;
+
+      // change the list
+      const newCardIdsList = cardIdsList.slice();
+      // [].splice(start, deleteCount, item1, item2, ...)
+      newCardIdsList.splice(source.index, 1);
+      newCardIdsList.splice(destination.index, 0, draggableId);
+
+      columnToChange.cardIdsList = newCardIdsList;
+      // console.log("columnToChange", columnToChange);
+
+      // update frontend first
+      setColumns(
+        columns.map((column) =>
+          column._id === columnToChange._id ? columnToChange : column
+        )
+      );
+
+      // console.log("updated (setColumns");
+      const columnUpdateResponse = await axios.post(
+        `http://localhost:4000/columns/update/${sourceColumnId}`,
+        {
+          cardIdsList: newCardIdsList,
+        }
+      );
+      // console.log("updated (post column)", columnUpdateResponse);
+    } // check if drag and drop in different columns
+    else if (sourceColumnId !== destinationColumnId) {
+      // get 2 columns to change
+      const sourceColumn = columns.filter(
+        (column) => column._id.toString() === sourceColumnId.toString()
+      )[0];
+      const destinationColumn = columns.filter(
+        (column) => column._id.toString() === destinationColumnId.toString()
+      )[0];
+
+      // get 2 cardIdsList to change
+      const newSourceColumnCardIdsList = sourceColumn.cardIdsList.slice();
+      const newDestinationColumnCardIdsList = destinationColumn.cardIdsList.slice();
+
+      // change 2 cardIdsList
+      newSourceColumnCardIdsList.splice(source.index, 1);
+      // console.log("newSourceColumnCardIdsList: ", newSourceColumnCardIdsList);
+      sourceColumn.cardIdsList = newSourceColumnCardIdsList;
+
+      newDestinationColumnCardIdsList.splice(destination.index, 0, draggableId);
+      // console.log(
+      //   "newDestinationColumnCardIdsList: ",
+      //   newDestinationColumnCardIdsList
+      // );
+      destinationColumn.cardIdsList = newDestinationColumnCardIdsList;
+
+      // update frontend: 2 columns
+      let newColumnsList = columns.map((column) =>
+        column._id.toString() === sourceColumnId.toString()
+          ? sourceColumn
+          : column
+      );
+      newColumnsList = columns.map((column) =>
+        column._id.toString() === destinationColumnId.toString()
+          ? destinationColumn
+          : column
+      );
+      // console.log("newColumnsList: ", newColumnsList);
+
+      // update frontendO: 2 cards
+
+      //---
+
+      setColumns(newColumnsList);
+
+      // update DB
+      const sourceColResponse = await axios.post(
+        `http://localhost:4000/columns/update/${sourceColumnId}`,
+        sourceColumn
+      );
+      // console.log("sourceColResponse", sourceColResponse);
+
+      const destinationColResponse = await axios.post(
+        `http://localhost:4000/columns/update/${destinationColumnId}`,
+        destinationColumn
+      );
+      // console.log("destinationColResponse", destinationColResponse);
+    }
   };
 
   return (

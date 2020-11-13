@@ -83,7 +83,7 @@ export default function InputCard({
       `http://localhost:4000/cards/${cardId}`
       // `https://retro-clone-api.herokuapp.com/cards/${cardId}`
     );
-    console.log(response);
+    // console.log(response);
 
     // update frontend
     // setContextCards(contextCards.filter((card) => card._id !== cardId));
@@ -107,8 +107,8 @@ export default function InputCard({
           content: content,
         }
       );
-      console.log("UpdateResponse");
-      console.log(updateResponse.data);
+      // console.log("UpdateResponse");
+      // console.log(updateResponse.data);
       updateCardFromColumn(updateResponse.data);
       setIsOpen(false);
     }
@@ -127,8 +127,8 @@ export default function InputCard({
 
     if (newColumn) {
       // setContextColumns([...contextColumns, newColumn]);
-      console.log("InputCard calls addColumnFromBoard");
-      console.log(newColumn);
+      // console.log("InputCard calls addColumnFromBoard");
+      // console.log(newColumn);
       addColumnFromBoard(newColumn);
     } else {
       // render 1 the? bao loi

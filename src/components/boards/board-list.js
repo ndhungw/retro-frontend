@@ -84,7 +84,7 @@ export default function BoardsList({ user }) {
       board
     );
     const newBoard = response.data;
-    console.log(newBoard);
+    // console.log(newBoard);
 
     // update frontend
     setBoards([...boards, newBoard]);

@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import SimpleTabs from "./components/simple-tabs";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Link,
+  Redirect,
+  Route,
+} from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import GradientIcon from "@material-ui/icons/Gradient";
@@ -11,11 +15,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import BoardDetails from "./components/boards/board-details";
 import StoreContextProvider from "./utils/store";
 import { AuthContext } from "./context/auth";
-import PrivateRoute from "./auth/private-route";
+// import PrivateRoute from "./auth/private-route";
 import Home from "./components/home";
 import Login from "./components/auth/login";
 import Signup from "./components/auth/signup";
 import LogoutMedal from "./components/menu/menu";
+
+import axios from "axios";
+import BoardsList from "./components/boards/board-list";
+// import SimpleTabs from "./components/simple-tabs";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -41,10 +49,27 @@ function App(props) {
   const classes = useStyles();
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
   const [authTokens, setAuthTokens] = useState(existingTokens);
-  console.log("App: authTokens", authTokens);
+  const [user, setUser] = useState({});
+
+  axios.defaults.headers.common["Authorization"] = "Bearer " + authTokens;
+
+  useEffect(() => {
+    async function getUser() {
+      if (authTokens) {
+        const url = `http://localhost:4000/auth/user`;
+        const userResponse = await axios.get(url);
+        const user = userResponse.data;
+        console.log("user", user);
+        setUser(user);
+      }
+    }
+    getUser();
+    // return () => {
+    //   cleanup;
+    // };
+  }, [authTokens]);
 
   const setTokens = (data) => {
-    console.log("App.js: setTokens: ", data);
     localStorage.setItem("tokens", JSON.stringify(data));
     setAuthTokens(data);
   };
@@ -66,19 +91,45 @@ function App(props) {
                   FunRetroClone
                 </Typography>
               </Link>
-              {authTokens && <LogoutMedal></LogoutMedal>}
+              {authTokens && (
+                <LogoutMedal
+                // user={user}
+                ></LogoutMedal>
+              )}
             </Toolbar>
           </AppBar>
 
           <main>
-            {/* <Route path="/" exact component={SimpleTabs} />
-            <Route path="/boards" exact component={SimpleTabs} />
-            <Route path="/boards/:id" component={BoardDetails} /> */}
             <Route path="/" exact component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
-            <PrivateRoute path="/boards" exact component={SimpleTabs} />
-            <PrivateRoute path="/boards/:id" component={BoardDetails} />
+
+            {authTokens ? (
+              <>
+                <Route path="/boards" exact>
+                  {/* <SimpleTabs user={user} /> */}
+                  <BoardsList user={user}></BoardsList>
+                </Route>
+                <Route path="/boards/:id">
+                  <BoardDetails user={user} />
+                </Route>
+              </>
+            ) : (
+              <Redirect
+                to={{ pathname: "/login", state: { referer: props.location } }}
+              />
+            )}
+
+            {/* code below for React Router v4 */}
+            {/* <PrivateRoute
+              path="/boards"
+              exact
+              render={(props) => <SimpleTabs {...props} user={user} />}
+            />
+            <PrivateRoute
+              path="/boards/:id"
+              render={(props) => <BoardDetails {...props} user={user} />}
+            /> */}
           </main>
           {/* Footer */}
           <footer className={classes.footer}>

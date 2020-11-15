@@ -6,7 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
-import { Link as LinkRRD, Redirect, useLocation } from "react-router-dom";
+import { Link as LinkRRD, Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -130,7 +130,7 @@ export default function Login(props) {
             id="username"
             label="Username"
             name="username"
-            // autoComplete="username"
+            autoComplete="username"
             autoFocus
             onChange={(e) => setUserName(e.target.value)}
           />

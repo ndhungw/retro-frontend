@@ -79,7 +79,8 @@ export default function InputCard({
   };
 
   const deleteCard = async (cardId) => {
-    const response = await axios.delete(
+    // const response =
+    await axios.delete(
       `http://localhost:4000/cards/${cardId}`
       // `https://retro-clone-api.herokuapp.com/cards/${cardId}`
     );

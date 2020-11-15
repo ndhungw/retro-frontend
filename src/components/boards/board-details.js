@@ -45,6 +45,7 @@ const useStyle = makeStyles((theme) => ({
 export default function BoardDetails() {
   const { id } = useParams();
   const [board, setBoard] = useState({});
+  const [boardName, setBoardName] = useState(``);
   const [columns, setColumns] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const history = useHistory();
@@ -64,7 +65,9 @@ export default function BoardDetails() {
         `http://localhost:4000/boards/${boardId}`
         // `https://retro-clone-api.herokuapp.com/boards/${boardId}`
       );
-      setBoard(response.data);
+      const board = response.data;
+      setBoard(board);
+      setBoardName(board.name);
     }
     getBoard(id);
 
@@ -88,7 +91,8 @@ export default function BoardDetails() {
   };
   const handleBlur = async () => {
     // update DB
-    const response = await axios.post(
+    // const response =
+    await axios.post(
       `http://localhost:4000/boards/update/${id}`,
       // `https://retro-clone-api.herokuapp.com/boards/update/${id}`,
       {
@@ -100,7 +104,8 @@ export default function BoardDetails() {
 
   const handleDeleteBoard = async () => {
     // update DB
-    const response = await axios.delete(
+    // const response =
+    await axios.delete(
       `http://localhost:4000/boards/${id}`
       // `https://retro-clone-api.herokuapp.com/boards/${id}`
     );
@@ -223,7 +228,8 @@ export default function BoardDetails() {
       );
 
       // console.log("updated (setColumns");
-      const columnUpdateResponse = await axios.post(
+      // const columnUpdateResponse =
+      await axios.post(
         `http://localhost:4000/columns/update/${sourceColumnId}`,
         {
           cardIdsList: newCardIdsList,
@@ -276,13 +282,15 @@ export default function BoardDetails() {
       setColumns(newColumnsList);
 
       // update DB
-      const sourceColResponse = await axios.post(
+      // const sourceColResponse =
+      await axios.post(
         `http://localhost:4000/columns/update/${sourceColumnId}`,
         sourceColumn
       );
       // console.log("sourceColResponse", sourceColResponse);
 
-      const destinationColResponse = await axios.post(
+      // const destinationColResponse =
+      await axios.post(
         `http://localhost:4000/columns/update/${destinationColumnId}`,
         destinationColumn
       );
@@ -295,7 +303,8 @@ export default function BoardDetails() {
       <div className={classes.boardTitle}>
         <InputBase
           className={classes.columnNameInput}
-          value={board.name}
+          // value={board.name}
+          value={boardName}
           onChange={(e) => handleBoardNameChange(e)}
           inputProps={{
             className: classes.input,
@@ -347,8 +356,9 @@ export default function BoardDetails() {
         </Dialog>
       </div>
       <div className={classes.columnsContainer}>
-        {columns.map((column) => (
+        {columns.map((column, index) => (
           <Column
+            index={index}
             key={column._id}
             column={column}
             deleteColumnFromBoard={deleteColumnFromBoard}

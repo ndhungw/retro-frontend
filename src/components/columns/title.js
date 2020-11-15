@@ -47,7 +47,7 @@ export default function Title({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const classes = useStyle();
-  const [newColName, setNewColName] = useState(columnName);
+  const [newColName, setNewColName] = useState(columnName ? columnName : "");
   const [openDeleteColumnDialog, setOpenDeleteColumnDialog] = useState(false);
 
   const handleChange = (e) => {
@@ -59,7 +59,8 @@ export default function Title({
     changeColumnNameFromBoard(columnId, newColName);
 
     // update DB
-    const response = await axios.post(
+    // const response =
+    await axios.post(
       `http://localhost:4000/columns/update/${columnId}`,
       // `https://retro-clone-api.herokuapp.com/columns/update/${columnId}`,
       {
@@ -79,7 +80,8 @@ export default function Title({
     // update frontend
     deleteColumnFromBoard(columnId);
     // update DB
-    const response = await axios.delete(
+    // const response =
+    await axios.delete(
       // `https://retro-clone-api.herokuapp.com/columns/${columnId}`
       `http://localhost:4000/columns/${columnId}`
     );

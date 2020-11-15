@@ -31,6 +31,7 @@ export default function Column({
   addCardFromColumn,
   updateCardFromColumn,
   deleteCardFromColumn,
+  index,
 }) {
   const classes = useStyle();
   // const [cards, setCards] = useState([]);
@@ -115,6 +116,7 @@ export default function Column({
               ref={provided.innerRef}
               {...provided.droppableProps}
               className={classes.cardContainer}
+              key={index}
             >
               {cardsList.map((card, index) =>
                 card ? (

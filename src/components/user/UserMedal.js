@@ -4,8 +4,10 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Avatar } from "@material-ui/core";
 import useAuth from "../../context/auth";
+import { Link } from "react-router-dom";
+// import { Redirect } from "react-router-dom";
 
-export default function SimpleMenu() {
+export default function UserMedal() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { setAuthTokens } = useAuth();
 
@@ -38,8 +40,9 @@ export default function SimpleMenu() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem component={Link} to={"/profile"}>
+          Profile
+        </MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </div>

@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Link,
-  Redirect,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import GradientIcon from "@material-ui/icons/Gradient";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
-
+import Home from "./views/Home/Home";
 import BoardDetails from "./components/boards/board-details";
 import StoreContextProvider from "./utils/store";
 import { AuthContext } from "./context/auth";
-// import PrivateRoute from "./auth/private-route";
-import Home from "./components/home";
 import Login from "./components/auth/login";
 import Signup from "./components/auth/signup";
-import LogoutMedal from "./components/menu/menu";
+import UserMedal from "./components/user/UserMedal";
 
 import axios from "axios";
 import BoardsList from "./components/boards/board-list";
-// import SimpleTabs from "./components/simple-tabs";
+import UserProfile from "./views/UserProfile/UserProfile";
+import PrivateRoute from "./auth/PrivateRoute";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -45,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function App(props) {
+function App() {
   const classes = useStyles();
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
   const [authTokens, setAuthTokens] = useState(existingTokens);
@@ -64,9 +58,6 @@ function App(props) {
       }
     }
     getUser();
-    // return () => {
-    //   cleanup;
-    // };
   }, [authTokens]);
 
   const setTokens = (data) => {
@@ -80,59 +71,34 @@ function App(props) {
         <Router>
           <AppBar position="relative">
             <Toolbar className={classes.toolbar}>
-              <Link
-                to="/"
-                // style={{ textDecoration: "none" }}
-                className={classes.navLinkHome}
-              >
+              <Link to="/" className={classes.navLinkHome}>
                 <GradientIcon className={classes.icon} />
-
                 <Typography variant="h6" color="inherit" noWrap>
                   FunRetroClone
                 </Typography>
               </Link>
-              {authTokens && (
-                <LogoutMedal
-                // user={user}
-                ></LogoutMedal>
-              )}
+              {authTokens && <UserMedal user={user}></UserMedal>}
             </Toolbar>
           </AppBar>
 
           <main>
-            <Route path="/" exact component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-
-            {authTokens ? (
-              <>
-                <Route path="/boards" exact>
-                  {/* <SimpleTabs user={user} /> */}
-                  <BoardsList user={user}></BoardsList>
-                </Route>
-                <Route path="/boards/:id">
-                  <BoardDetails user={user} />
-                </Route>
-              </>
-            ) : (
-              <Redirect
-                to={{ pathname: "/login", state: { referer: props.location } }}
-              />
-            )}
-
-            {/* code below for React Router v4 */}
-            {/* <PrivateRoute
-              path="/boards"
-              exact
-              render={(props) => <SimpleTabs {...props} user={user} />}
-            />
-            <PrivateRoute
-              path="/boards/:id"
-              render={(props) => <BoardDetails {...props} user={user} />}
-            /> */}
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+              <PrivateRoute path="/boards" exact>
+                <BoardsList user={user}></BoardsList>
+              </PrivateRoute>
+              <PrivateRoute path="/boards/:id" exact>
+                <BoardDetails user={user} />
+              </PrivateRoute>
+              <PrivateRoute path="/profile">
+                <UserProfile user={user} />
+              </PrivateRoute>
+            </Switch>
           </main>
           {/* Footer */}
-          <footer className={classes.footer}>
+          {/* <footer className={classes.footer}>
             <Typography variant="h6" align="center" gutterBottom>
               Footer
             </Typography>
@@ -145,7 +111,7 @@ function App(props) {
               Something here to give the footer a purpose!
             </Typography>
             <Copyright />
-          </footer>
+          </footer> */}
           {/* End footer */}
         </Router>
       </StoreContextProvider>
@@ -153,17 +119,17 @@ function App(props) {
   );
 }
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      {/* <Link color="inherit" href="https://material-ui.com/">
-        1712481@fit
-      </Link>{" "} */}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+// function Copyright() {
+//   return (
+//     <Typography variant="body2" color="textSecondary" align="center">
+//       {"Copyright © "}
+//       {/* <Link color="inherit" href="https://material-ui.com/">
+//         1712481@fit
+//       </Link>{" "} */}
+//       {new Date().getFullYear()}
+//       {"."}
+//     </Typography>
+//   );
+// }
 
 export default App;

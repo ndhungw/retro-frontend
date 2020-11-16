@@ -63,9 +63,11 @@ export default function Login(props) {
   const classes = useStyles();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userName, setUserName] = useState(
+  const [username, setUsername] = useState(
     usernameFromSignUp ? usernameFromSignUp : ""
   );
+  const [isInvalidUsername, setIsInvalidUsername] = useState(false);
+  const [isInvalidPassword, setIsInvalidPassword] = useState(false);
   const [password, setPassword] = useState("");
   const { setAuthTokens } = useAuth();
 
@@ -81,7 +83,7 @@ export default function Login(props) {
     e.preventDefault();
     try {
       const response = await axios.post(`http://localhost:4000/auth/login`, {
-        username: userName,
+        username: username,
         password: password,
       });
       console.log(response);
@@ -102,6 +104,31 @@ export default function Login(props) {
     // return <Redirect to="/login" />;
   }
 
+  const handleChangeUsername = (e) => {
+    setUsername(e.target.value);
+    const currentUsername = e.target.value;
+    const usernameRegex = /^(?=.{6,20}$)(?![_.0-9])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+
+    if (!usernameRegex.test(currentUsername)) {
+      console.log("regex not pass");
+      setIsInvalidUsername(true);
+    } else {
+      setIsInvalidUsername(false);
+    }
+  };
+
+  const handleChangePassword = (e) => {
+    const currentPassword = e.target.value;
+    setPassword(currentPassword);
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+    if (!passwordRegex.test(currentPassword)) {
+      setIsInvalidPassword(true);
+    } else {
+      setIsInvalidPassword(false);
+    }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -113,17 +140,6 @@ export default function Login(props) {
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
-          {/* <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          /> */}
           {!isError && msgFromSignUp && (
             <Alert severity="success" color="success">
               {msgFromSignUp}
@@ -144,8 +160,10 @@ export default function Login(props) {
             name="username"
             autoComplete="username"
             autoFocus
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            value={username}
+            onChange={(e) => handleChangeUsername(e)}
+            error={isInvalidUsername}
+            helperText={isInvalidUsername ? "Invalid username" : null}
           />
           <TextField
             variant="outlined"
@@ -157,7 +175,9 @@ export default function Login(props) {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handleChangePassword(e)}
+            error={isInvalidPassword}
+            helperText={isInvalidPassword ? "Invalid password" : null}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -170,6 +190,7 @@ export default function Login(props) {
             color="primary"
             className={classes.submit}
             onClick={(e) => postLogin(e)}
+            disabled={username === "" || password === ""}
           >
             Sign In
           </Button>

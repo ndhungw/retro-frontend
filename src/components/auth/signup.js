@@ -53,15 +53,12 @@ export default function SignUp() {
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [isInvalidUsername, setIsInvalidUsername] = useState(false);
-
   const [password, setPassword] = useState("");
   const [isInvalidPassword, setIsInvalidPassword] = useState(false);
   const [password2, setPassword2] = useState("");
   const [isInvalidPassword2, setIsInvalidPassword2] = useState(false);
-
   const [email, setEmail] = useState("");
   const [isInvalidEmail, setIsInvalidEmail] = useState(false);
-
   const [phone, setPhone] = useState("");
   const [isInvalidPhone, setIsInvalidPhone] = useState(false);
 
@@ -167,7 +164,7 @@ export default function SignUp() {
   const handleChangeEmail = (e) => {
     const currentEmail = e.target.value;
     setEmail(currentEmail);
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     if (!emailRegex.test(currentEmail)) {
       setIsInvalidEmail(true);
@@ -297,6 +294,11 @@ export default function SignUp() {
             className={classes.submit}
             onClick={(e) => postSignUp(e)}
             disabled={
+              username === "" ||
+              password === "" ||
+              password2 === "" ||
+              email === "" ||
+              phone === "" ||
               isInvalidUsername ||
               isInvalidEmail ||
               isInvalidPhone ||

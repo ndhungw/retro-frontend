@@ -57,8 +57,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props) {
   const location = useLocation();
   console.log("location", location);
-  const msgFromSignUp = location.state.message;
-  const usernameFromSignUp = location.state.username;
+  const msgFromSignUp = location.state ? location.state.message : null;
+  const usernameFromSignUp = location.state ? location.state.username : null;
 
   const classes = useStyles();
   const [isLoggedIn, setLoggedIn] = useState(false);

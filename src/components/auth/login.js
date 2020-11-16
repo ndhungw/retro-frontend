@@ -6,7 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
-import { Link as LinkRRD, Redirect } from "react-router-dom";
+import { Link as LinkRRD, Redirect, useLocation } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -55,12 +55,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login(props) {
+  const location = useLocation();
+  console.log("location", location);
+  const msgFromSignUp = location.state.message;
+  const usernameFromSignUp = location.state.username;
+
   const classes = useStyles();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState(
+    usernameFromSignUp ? usernameFromSignUp : ""
+  );
   const [password, setPassword] = useState("");
   const { setAuthTokens } = useAuth();
+
   // const referer = props.location.state.referer || "/";
   //
   // const location = useLocation();
@@ -82,7 +90,6 @@ export default function Login(props) {
         console.log("response.data.token: ", response.data.token);
         setAuthTokens(response.data.token);
         setLoggedIn(true);
-      } else {
       }
     } catch (err) {
       console.log("Error in postLogin: ", err);
@@ -117,6 +124,11 @@ export default function Login(props) {
             autoComplete="email"
             autoFocus
           /> */}
+          {!isError && msgFromSignUp && (
+            <Alert severity="success" color="success">
+              {msgFromSignUp}
+            </Alert>
+          )}
           {isError && (
             <Alert severity="error" color="error">
               Login failed. Username or password is incorrect.
@@ -132,6 +144,7 @@ export default function Login(props) {
             name="username"
             autoComplete="username"
             autoFocus
+            value={userName}
             onChange={(e) => setUserName(e.target.value)}
           />
           <TextField

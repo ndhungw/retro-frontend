@@ -66,6 +66,7 @@ export default function BoardDetails() {
         // `https://retro-clone-api.herokuapp.com/boards/${boardId}`
       );
       const board = response.data;
+      console.log("boards", board);
       setBoard(board);
       setBoardName(board.name);
     }
@@ -85,21 +86,18 @@ export default function BoardDetails() {
   }, [id]);
 
   const handleBoardNameChange = (e) => {
-    setBoard({
-      name: e.target.value,
-    });
+    setBoardName(e.target.value);
   };
   const handleBlur = async () => {
     // update DB
-    // const response =
-    await axios.post(
+    const response = await axios.post(
       `http://localhost:4000/boards/update/${id}`,
       // `https://retro-clone-api.herokuapp.com/boards/update/${id}`,
       {
-        name: board.name,
+        name: boardName,
       }
     );
-    // console.log(response);
+    console.log(response);
   };
 
   const handleDeleteBoard = async () => {

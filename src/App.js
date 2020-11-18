@@ -18,6 +18,7 @@ import axios from "axios";
 import BoardsList from "./components/boards/board-list";
 import UserProfile from "./views/UserProfile/UserProfile";
 import PrivateRoute from "./auth/PrivateRoute";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -36,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
+  },
+  button: {
+    margin: theme.spacing(0, 1, 0, 1),
   },
 }));
 
@@ -77,7 +81,26 @@ function App() {
                   FunRetroClone
                 </Typography>
               </Link>
-              {authTokens && <UserMedal user={user}></UserMedal>}
+              {authTokens ? (
+                <UserMedal user={user}></UserMedal>
+              ) : (
+                <div>
+                  <Button className={classes.button}>
+                    <Link
+                      to="/login"
+                      className={classes.navLinkHome}
+                      color="primary"
+                    >
+                      Log in
+                    </Link>
+                  </Button>
+                  <Button className={classes.button}>
+                    <Link to="/signup" className={classes.navLinkHome}>
+                      Sign up
+                    </Link>
+                  </Button>
+                </div>
+              )}
             </Toolbar>
           </AppBar>
 

@@ -87,9 +87,7 @@ function App() {
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />
               <PrivateRoute path="/boards" exact>
-                <BoardsList
-                // user={user}
-                ></BoardsList>
+                <BoardsList user={user}></BoardsList>
               </PrivateRoute>
               <PrivateRoute path="/boards/:id" exact>
                 <BoardDetails user={user} />

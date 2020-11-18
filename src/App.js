@@ -71,7 +71,7 @@ function App() {
         <Router>
           <AppBar position="relative">
             <Toolbar className={classes.toolbar}>
-              <Link to="/" className={classes.navLinkHome}>
+              <Link to="/boards" className={classes.navLinkHome}>
                 <GradientIcon className={classes.icon} />
                 <Typography variant="h6" color="inherit" noWrap>
                   FunRetroClone
@@ -87,7 +87,9 @@ function App() {
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />
               <PrivateRoute path="/boards" exact>
-                <BoardsList user={user}></BoardsList>
+                <BoardsList
+                // user={user}
+                ></BoardsList>
               </PrivateRoute>
               <PrivateRoute path="/boards/:id" exact>
                 <BoardDetails user={user} />

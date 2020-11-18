@@ -141,7 +141,6 @@ export default function Column({
           addCardFromColumn={addCardFromColumn}
           type="card"
           columnId={column._id}
-          // userId="5f942dfe446aa806e46b07a9" // user001
           userId={user._id}
         />
       </Paper>

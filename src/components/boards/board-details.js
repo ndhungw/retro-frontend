@@ -42,7 +42,7 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function BoardDetails() {
+export default function BoardDetails({ user }) {
   const { id } = useParams();
   const [board, setBoard] = useState({});
   const [boardName, setBoardName] = useState(``);
@@ -51,8 +51,20 @@ export default function BoardDetails() {
   const history = useHistory();
   const classes = useStyle();
   const [allCards, setAllCards] = useState([]);
+  // const [user, setUser] = useState({});
 
   useEffect(() => {
+    // async function getUser() {
+    //   if (authTokens) {
+    //     const url = `http://localhost:4000/auth/user`;
+    //     const userResponse = await axios.get(url);
+    //     const user = userResponse.data;
+    //     console.log("user", user);
+    //     setUser(user);
+    //   }
+    // }
+    // getUser();
+
     async function getAllCards() {
       const response = await axios.get(`http://localhost:4000/cards`);
       setAllCards(response.data);
@@ -372,6 +384,7 @@ export default function BoardDetails() {
             addCardFromColumn={addCardFromColumn}
             updateCardFromColumn={updateCardFromColumn}
             deleteCardFromColumn={deleteCardFromColumn}
+            user={user}
           />
         ))}
 

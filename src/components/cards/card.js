@@ -12,11 +12,12 @@ const useStyle = makeStyles((theme) => ({
   card: {
     padding: theme.spacing(1),
     margin: theme.spacing(1),
-    minHeight: "2.5rem",
+    // minHeight: "2.5rem",
     background: "#fff",
     "&:hover": {
       backgroundColor: fade("#000", 0.1),
     },
+    // width: "300px",
   },
 }));
 
@@ -55,8 +56,17 @@ export default function Card({
                 className={classes.card}
                 onClick={() => setIsOpen(!isOpen)}
                 elevation={0}
+                style={
+                  {
+                    // overflow: "hidden",
+                    // textOverflow: "ellipsis",
+                    // width: "11rem",
+                  }
+                }
               >
-                <Typography>{card.content}</Typography>
+                <Typography style={{ wordWrap: "break-word" }} display="inline">
+                  {card.content}
+                </Typography>
               </Paper>
             </Collapse>
           </div>

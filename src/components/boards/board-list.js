@@ -58,8 +58,8 @@ export default function BoardsList({ user }) {
   useEffect(() => {
     async function getAllBoards() {
       const response = await axios.get(
-        // `https://retro-clone-api.herokuapp.com/boards?userId=${user._id}`
-        `http://localhost:4000/boards?userId=${user._id}`
+        `https://retro-clone-api.herokuapp.com/boards?userId=${user._id}`
+        // `http://localhost:4000/boards?userId=${user._id}`
       );
       const boards = response.data;
       setBoards(boards);
@@ -79,8 +79,8 @@ export default function BoardsList({ user }) {
 
     // update DB
     const response = await axios.post(
-      `http://localhost:4000/boards/add`,
-      // `https://retro-clone-api.herokuapp.com/boards/add`,
+      // `http://localhost:4000/boards/add`,
+      `https://retro-clone-api.herokuapp.com/boards/add`,
       board
     );
     const newBoard = response.data;

@@ -82,10 +82,14 @@ export default function Login(props) {
   const postLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:4000/auth/login`, {
-        username: username,
-        password: password,
-      });
+      const response = await axios.post(
+        // `http://localhost:4000/auth/login`
+        `https://retro-clone-api.herokuapp.com/auth/login`,
+        {
+          username: username,
+          password: password,
+        }
+      );
       console.log(response);
 
       if (response.status === 200) {

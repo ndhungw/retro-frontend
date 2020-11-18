@@ -101,7 +101,8 @@ export default function SignUp() {
 
     try {
       const signUpResponse = await Axios.post(
-        `http://localhost:4000/auth/signup`,
+        // `http://localhost:4000/auth/signup`,
+        `https://retro-clone-api.herokuapp.com/auth/signup`,
         {
           username,
           password,

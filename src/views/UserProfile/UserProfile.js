@@ -54,7 +54,8 @@ export default function UserProfile() {
   useEffect(() => {
     async function getUserInfo() {
       const getUserInfoResponse = await Axios.get(
-        `http://localhost:4000/auth/user`
+        // `http://localhost:4000/auth/user`
+        `https://retro-clone-api.herokuapp.com/auth/user`
       );
       const user = getUserInfoResponse.data;
       setUser(user);
@@ -121,7 +122,8 @@ export default function UserProfile() {
 
     try {
       const updateUserResponse = await Axios.post(
-        `http://localhost:4000/users/update/${user._id}`,
+        // `http://localhost:4000/users/update/${user._id}`,
+        `https://retro-clone-api.herokuapp.com/users/update/${user._id}`,
         {
           password,
           email,

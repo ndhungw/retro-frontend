@@ -61,8 +61,8 @@ export default function Title({
     // update DB
     // const response =
     await axios.post(
-      `http://localhost:4000/columns/update/${columnId}`,
-      // `https://retro-clone-api.herokuapp.com/columns/update/${columnId}`,
+      // `http://localhost:4000/columns/update/${columnId}`,
+      `https://retro-clone-api.herokuapp.com/columns/update/${columnId}`,
       {
         name: newColName,
       }
@@ -82,8 +82,8 @@ export default function Title({
     // update DB
     // const response =
     await axios.delete(
-      // `https://retro-clone-api.herokuapp.com/columns/${columnId}`
-      `http://localhost:4000/columns/${columnId}`
+      `https://retro-clone-api.herokuapp.com/columns/${columnId}`
+      // `http://localhost:4000/columns/${columnId}`
     );
     // console.log(response);
     setOpenDeleteColumnDialog(false);

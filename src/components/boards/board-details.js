@@ -54,19 +54,11 @@ export default function BoardDetails({ user }) {
   // const [user, setUser] = useState({});
 
   useEffect(() => {
-    // async function getUser() {
-    //   if (authTokens) {
-    //     const url = `http://localhost:4000/auth/user`;
-    //     const userResponse = await axios.get(url);
-    //     const user = userResponse.data;
-    //     console.log("user", user);
-    //     setUser(user);
-    //   }
-    // }
-    // getUser();
-
     async function getAllCards() {
-      const response = await axios.get(`http://localhost:4000/cards`);
+      const response = await axios.get(
+        // `http://localhost:4000/cards`
+        `https://retro-clone-api.herokuapp.com/cards`
+      );
       setAllCards(response.data);
       // console.log("getAllCards: ", response.data);
     }
@@ -74,8 +66,8 @@ export default function BoardDetails({ user }) {
 
     async function getBoard(boardId) {
       const response = await axios.get(
-        `http://localhost:4000/boards/${boardId}`
-        // `https://retro-clone-api.herokuapp.com/boards/${boardId}`
+        // `http://localhost:4000/boards/${boardId}`
+        `https://retro-clone-api.herokuapp.com/boards/${boardId}`
       );
       const board = response.data;
       console.log("boards", board);
@@ -86,9 +78,8 @@ export default function BoardDetails({ user }) {
 
     async function getAllColumnsFromBoard(boardId) {
       const response = await axios.get(
-        // "https://retro-clone-api.herokuapp.com/columns"
-        `http://localhost:4000/columns?boardId=${boardId}`
-        // `http://localhost:4000/columns?boardId=5fadffb391cdfe3a649be7dc`
+        // `http://localhost:4000/columns?boardId=${boardId}`,
+        `https://retro-clone-api.herokuapp.com/columns?boardId=${boardId}`
       );
       const columns = response.data;
       // console.log("getAllColumnsFromBoard: ", columns);
@@ -103,8 +94,8 @@ export default function BoardDetails({ user }) {
   const handleBlur = async () => {
     // update DB
     const response = await axios.post(
-      `http://localhost:4000/boards/update/${id}`,
-      // `https://retro-clone-api.herokuapp.com/boards/update/${id}`,
+      // `http://localhost:4000/boards/update/${id}`,
+      `https://retro-clone-api.herokuapp.com/boards/update/${id}`,
       {
         name: boardName,
       }
@@ -116,8 +107,8 @@ export default function BoardDetails({ user }) {
     // update DB
     // const response =
     await axios.delete(
-      `http://localhost:4000/boards/${id}`
-      // `https://retro-clone-api.herokuapp.com/boards/${id}`
+      // `http://localhost:4000/boards/${id}`
+      `https://retro-clone-api.herokuapp.com/boards/${id}`
     );
     // console.log(response.data);
 
@@ -240,7 +231,8 @@ export default function BoardDetails({ user }) {
       // console.log("updated (setColumns");
       // const columnUpdateResponse =
       await axios.post(
-        `http://localhost:4000/columns/update/${sourceColumnId}`,
+        // `http://localhost:4000/columns/update/${sourceColumnId}`,
+        `https://retro-clone-api.herokuapp.com/columns/update/${sourceColumnId}`,
         {
           cardIdsList: newCardIdsList,
         }
@@ -294,14 +286,16 @@ export default function BoardDetails({ user }) {
       // update DB
       // const sourceColResponse =
       await axios.post(
-        `http://localhost:4000/columns/update/${sourceColumnId}`,
+        // `http://localhost:4000/columns/update/${sourceColumnId}`,
+        `https://retro-clone-api.herokuapp.com/columns/update/${sourceColumnId}`,
         sourceColumn
       );
       // console.log("sourceColResponse", sourceColResponse);
 
       // const destinationColResponse =
       await axios.post(
-        `http://localhost:4000/columns/update/${destinationColumnId}`,
+        // `http://localhost:4000/columns/update/${destinationColumnId}`,
+        `https://retro-clone-api.herokuapp.com/columns/update/${destinationColumnId}`,
         destinationColumn
       );
       // console.log("destinationColResponse", destinationColResponse);

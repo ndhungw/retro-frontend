@@ -64,8 +64,8 @@ export default function InputCard({
     };
 
     const response = await axios.post(
-      // "https://retro-clone-api.herokuapp.com/cards/add",
-      "http://localhost:4000/cards/add",
+      "https://retro-clone-api.herokuapp.com/cards/add",
+      // "http://localhost:4000/cards/add",
       newCard
     );
 
@@ -81,8 +81,8 @@ export default function InputCard({
   const deleteCard = async (cardId) => {
     // const response =
     await axios.delete(
-      `http://localhost:4000/cards/${cardId}`
-      // `https://retro-clone-api.herokuapp.com/cards/${cardId}`
+      // `http://localhost:4000/cards/${cardId}`
+      `https://retro-clone-api.herokuapp.com/cards/${cardId}`
     );
     // console.log(response);
 
@@ -99,8 +99,8 @@ export default function InputCard({
       deleteCard(cardId);
     } else {
       const updateResponse = await axios.post(
-        `http://localhost:4000/cards/update/${cardId}`,
-        // `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
+        // `http://localhost:4000/cards/update/${cardId}`,
+        `https://retro-clone-api.herokuapp.com/cards/update/${cardId}`,
         {
           // userId: cardFound.userId,
           // content: cardFound.content,
@@ -117,8 +117,8 @@ export default function InputCard({
 
   const addColumn = async () => {
     const response = await axios.post(
-      "http://localhost:4000/columns/add",
-      // "https://retro-clone-api.herokuapp.com/columns/add",
+      // "http://localhost:4000/columns/add",
+      "https://retro-clone-api.herokuapp.com/columns/add",
       {
         name: content,
         boardId: boardId,

@@ -38,7 +38,8 @@ export default function Card({
     async function getUserInfo() {
       // user that is author of this card may be another user, not the logging user
       const userResponse = await Axios.get(
-        `http://localhost:4000/users/${card.userId}`
+        // `http://localhost:4000/users/${card.userId}`
+        `https://retro-clone-api.herokuapp.com/users/${card.userId}`
       );
       const user = userResponse.data;
       setUser(user);

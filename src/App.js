@@ -54,7 +54,8 @@ function App() {
   useEffect(() => {
     async function getUser() {
       if (authTokens) {
-        const url = `http://localhost:4000/auth/user`;
+        // const url = `http://localhost:4000/auth/user`;
+        const url = `https://retro-clone-api.herokuapp.com/auth/user`;
         const userResponse = await axios.get(url);
         const user = userResponse.data;
         console.log("user", user);
